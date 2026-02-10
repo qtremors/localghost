@@ -83,3 +83,103 @@ async def test_self_signed_certificate_is_inspected_but_not_trusted(tmp_path, lo
     assert not result.cert_valid
     assert 58 <= result.days_until_expiry <= 60
     assert any(finding.title == 'SSL Certificate Not Trusted' for finding in result.findings)
+
+
+async def test_load_latency_includes_response_body(local_server):
+    import asyncio
+
+    import aiohttp
+
+    from backend.scanners.load_test import send_request
+
+    async def handler(request):
+        response = web.StreamResponse()
+        await response.prepare(request)
+        await asyncio.sleep(.04)
+        await response.write(b'complete body')
+        await response.write_eof()
+        return response
+    async with local_server(handler) as url:
+        async with aiohttp.ClientSession() as session:
+            success, latency = await send_request(session, url)
+    assert success
+    assert latency >= 35
+
+
+async def test_slow_connection_cancellation_closes_sockets():
+    import asyncio
+    from contextlib import suppress
+
+    from backend.scanners.ddos_test import _test_slowloris
+
+    connected, closed = asyncio.Event(), asyncio.Event()
+    async def handler(reader, writer):
+        connected.set()
+        try:
+            await reader.read()
+            closed.set()
+        finally:
+            writer.close()
+            await writer.wait_closed()
+    server = await asyncio.start_server(handler, '127.0.0.1', 0)
+    try:
+        port = server.sockets[0].getsockname()[1]
+        task = asyncio.create_task(_test_slowloris(f'http://127.0.0.1:{port}', num_connections=1, hold_seconds=30))
+        await asyncio.wait_for(connected.wait(), timeout=2)
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
+        await asyncio.wait_for(closed.wait(), timeout=2)
+    finally:
+        server.close()
+        await server.wait_closed()
+
+
+async def test_plain_text_reflection_is_not_reported_as_html_xss(local_server, monkeypatch):
+    from backend.scanners import xss_scan
+    monkeypatch.setattr(xss_scan, 'XSS_PAYLOADS', ['<svg/onload=alert(1)>'])
+    monkeypatch.setattr(xss_scan, 'COMMON_PARAMS', ['q'])
+    monkeypatch.setattr(xss_scan, 'INJECTABLE_PATHS', ['/'])
+    async def handler(request):
+        return web.Response(text=request.query.get('q', request.path), content_type='text/plain')
+    async with local_server(handler) as url:
+        result = await xss_scan.scan_xss(url)
+    assert not result['vulnerable']
+    assert result['reflections_found'] == 0
+    assert not any('X-XSS-Protection' in finding['title'] for finding in result['findings'])
+
+
+async def test_xss_probes_do_not_follow_redirects(local_server, monkeypatch):
+    from backend.scanners import xss_scan
+    monkeypatch.setattr(xss_scan, 'XSS_PAYLOADS', ['<svg/onload=alert(1)>'])
+    monkeypatch.setattr(xss_scan, 'COMMON_PARAMS', ['q'])
+    monkeypatch.setattr(xss_scan, 'INJECTABLE_PATHS', ['/'])
+    calls = []
+    async def destination(request):
+        calls.append(request.path)
+        return web.Response(text='destination')
+    async with local_server(destination) as other:
+        async def redirect(request):
+            raise web.HTTPFound(other)
+        async with local_server(redirect) as url:
+            await xss_scan.scan_xss(url)
+    assert calls == []
+
+
+async def test_endpoint_rate_limit_detection_updates_overall_result(monkeypatch):
+    from backend.scanners import rate_limit_test
+    async def headers(*args, **kwargs):
+        return {'headers': {}, 'completed': True}
+    async def burst(*args, **kwargs):
+        return {'rate_limited_count': 0, 'total_requests': 50, 'accepted': 50, 'errors': 0, 'unavailable': 0, 'first_429_at': 0}
+    async def sustained(*args, **kwargs):
+        return {'rate_limited_count': 0, 'total_requests': 80, 'rps_target': 10, 'duration_sec': 8, 'accepted': 80, 'errors': 0, 'unavailable': 0}
+    async def endpoints(*args, **kwargs):
+        return [{'path': '/login', 'rate_limited': True, 'requests_sent': 20, 'accepted': 19, 'rejected': 1, 'errors': 0, 'unavailable': 0}]
+    monkeypatch.setattr(rate_limit_test, '_check_rate_limit_headers', headers)
+    monkeypatch.setattr(rate_limit_test, '_burst_test', burst)
+    monkeypatch.setattr(rate_limit_test, '_sustained_test', sustained)
+    monkeypatch.setattr(rate_limit_test, '_test_endpoint_limits', endpoints)
+    result = await rate_limit_test.test_rate_limits('http://localhost')
+    assert result['has_rate_limiting']
+    assert not any(finding['title'] == 'No Rate Limiting Detected' for finding in result['findings'])

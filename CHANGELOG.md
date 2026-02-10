@@ -1,10 +1,16 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.3
-> **Last Updated:** 2026-02-09
+> **Version:** 0.0.4
+> **Last Updated:** 2026-02-10
 
 ---
+
+## [0.0.4] - 2026-02-10
+
+- Inspect Next.js, Vite/React, and HTML/JavaScript source without executing project code.
+- Recognize supported routes, configuration, and credential material in source and client builds.
+- Add optional load, burst, slow-connection, rate-limit, and reflected-HTML checks.
 
 ## [0.0.3] - 2026-02-09
 
