@@ -1,10 +1,16 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.4
-> **Last Updated:** 2026-02-10
+> **Version:** 0.0.5
+> **Last Updated:** 2026-02-23
 
 ---
+
+## [0.0.5] - 2026-02-23
+
+- Run scans through a shared API and CLI with progress, cancellation, and local history.
+- Add selected-page Chromium checks, authenticated sessions, Docker discovery, and individual rechecks.
+- Export text, JSON, and standalone HTML reports with findings, evidence, and fix guidance.
 
 ## [0.0.4] - 2026-02-10
 
