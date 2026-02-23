@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localghost | Local Security & Benchmark Tool</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glow-sphere t-left"></div>
+    <div class="glow-sphere b-right"></div>
+    
+    <main class="container">
+        <header>
+            <h1 class="glitch" data-text="LOCALGHOST">LOCALGHOST</h1>
+            <p class="subtitle">Possess & analyze local running servers</p>
+        </header>
+
+        <section class="target-card">
+            <form id="scan-form">
+                <div class="input-group">
+                    <label for="target-url">Target URL</label>
+                    <input type="text" id="target-url" placeholder="http://127.0.0.1:8000" required>
+                </div>
+                
+                <div class="options-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="run-vuln" checked>
+                        <span class="checkmark"></span>
+                        Vulnerability Auth
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="run-bench" checked>
+                        <span class="checkmark"></span>
+                        Load Test
+                    </label>
+                </div>
+
+                <button type="submit" id="scan-btn" class="hack-btn">
+                    <span>INITIATE_POSSESSION</span>
+                    <div class="loader hidden" id="scan-loader"></div>
+                </button>
+            </form>
+        </section>
+
+        <section id="results-container" class="results-card hidden">
+            <h2>Possession Report</h2>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-target="ports">Ports</button>
+                <button class="tab-btn" data-target="vulns">Vulnerabilities</button>
+                <button class="tab-btn" data-target="bench">Benchmark</button>
+            </div>
+
+            <div class="tab-content active" id="ports">
+                <div class="terminal-box" id="ports-res"></div>
+            </div>
+            
+            <div class="tab-content" id="vulns">
+                <div class="terminal-box" id="vulns-res"></div>
+            </div>
+
+            <div class="tab-content" id="bench">
+                <div class="stats-grid" id="bench-res">
+                    <!-- Dynamic stats will go here -->
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="/static/app.js"></script>
+</body>
+</html>
