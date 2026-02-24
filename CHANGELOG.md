@@ -1,10 +1,15 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.5
-> **Last Updated:** 2026-02-23
+> **Version:** 0.0.6
+> **Last Updated:** 2026-02-24
 
 ---
+
+## [0.0.6] - 2026-02-24
+
+- Add light and dark themes, locally served fonts, and project branding.
+- Style navigation, project cards, and dedicated scan setup controls.
 
 ## [0.0.5] - 2026-02-23
 
