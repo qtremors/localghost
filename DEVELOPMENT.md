@@ -2,7 +2,7 @@
 
 > Comprehensive documentation for developers working on Localghost.
 
-**Version:** 0.1.0 | **Last Updated:** 2026-02-23
+**Version:** 0.2.0 | **Last Updated:** 2026-02-24
 
 ---
 
@@ -11,6 +11,7 @@
 - [Architecture Overview](#architecture-overview)
 - [Project Structure](#project-structure)
 - [Naming Conventions](#naming-conventions)
+- [Database Schema](#database-schema)
 - [API Reference](#api-reference)
 - [Environment Variables](#environment-variables)
 - [Security Practices](#security-practices)
@@ -25,27 +26,40 @@
 
 ## Architecture Overview
 
-Localghost is a lightweight pentesting and benchmarking dashboard designed for local development environments. It uses a **FastAPI** backend to orchestrate various security and performance tests asynchronously using `aiohttp` and `asyncio`.
+Localghost follows a **layered service** architecture with a FastAPI backend orchestrating 11 async scanner modules, a scoring engine, and SQLite persistence. The frontend is a vanilla JS dashboard using Material Design 3 tokens.
 
 ```mermaid
 graph TD
-    A[Frontend: Vanilla JS/HTML] -->|POST /api/scan| B[Backend: FastAPI]
-    B -->|Async Scan| C[Scanner: Port Scan]
-    B -->|Async Scan| D[Scanner: Vuln Check]
-    B -->|Async Test| E[Benchmark: Load Test]
-    C -->|Results| B
-    D -->|Results| B
-    E -->|Results| B
-    B -->|JSON Report| A
+    A[Frontend: MD3 + ES Modules] -->|POST /api/scan| B[Router Layer]
+    B --> C[Scanner Service]
+    C -->|Async Gather| D[Port Scanner]
+    C -->|Async Gather| E[Vuln Scanner]
+    C -->|Async Gather| F[SSL Scanner]
+    C -->|Async Gather| G[CORS Scanner]
+    C -->|Async Gather| H[Cookie Scanner]
+    C -->|Async Gather| I[Tech Detector]
+    C -->|Async Gather| J[DNS Scanner]
+    C -->|Async Gather| K[Load Tester]
+    C -->|Async Gather| P[DDoS Tester]
+    C -->|Async Gather| Q[Rate Limit Tester]
+    C -->|Async Gather| R[XSS Scanner]
+    C --> L[Scoring Engine]
+    L -->|Score + Grade| C
+    C -->|Save| M[SQLite Database]
+    C -->|ScanResponse| B
+    B -->|JSON| A
 ```
 
 ### Key Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| **FastAPI + Asyncio** | Enables non-blocking execution of multiple scans (ports, vulns, benchmarks) simultaneously. |
-| **Vanilla Frontend** | Lowers technical debt and ensures maximum compatibility without build step complexities for a local tool. |
-| **Glow Design System** | Provides a modern, premium "hacker" aesthetic that fits the tool's purpose. |
+| **FastAPI + asyncio** | Non-blocking concurrent execution of all 11 scan modules via `asyncio.gather`. |
+| **Layered architecture** | Routers → Services → Scanners separation enables testing and swapping individual modules. |
+| **Vanilla frontend + ES Modules** | Zero build step, maximum compatibility. ES Modules give proper code organization without bundler complexity. |
+| **Material Design 3** | Google's latest design system provides accessible, responsive, and premium UI out of the box. |
+| **SQLite via aiosqlite** | Lightweight, zero-config persistence for scan history. No external database needed. |
+| **Weighted scoring (0–100)** | Each security category has a proportional weight reflecting its real-world impact. |
 
 ---
 
@@ -54,22 +68,49 @@ graph TD
 ```
 localghost/
 ├── backend/                  # Python/FastAPI Application
-│   ├── scanner/              # Core scanning logic
+│   ├── routers/              # API route definitions
+│   │   ├── scan.py           # POST /api/scan
+│   │   ├── history.py        # GET/DELETE /api/history
+│   │   └── report.py         # GET /api/report/:id
+│   ├── services/             # Business logic
+│   │   ├── scanner.py        # Orchestrates all scan modules
+│   │   └── scoring.py        # Security score computation
+│   ├── scanners/             # Individual scan modules
 │   │   ├── port_scan.py      # TCP port discovery
-│   │   └── vuln_scan.py      # Security header & file checks
-│   ├── benchmark/            # Performance testing
-│   │   └── load_test.py      # HTTP load generation
-│   └── main.py               # API entry point & static mounting
-├── frontend/                 # Client-side assets
-│   ├── static/               
-│   │   ├── style.css         # Glow CSS system
-│   │   └── app.js            # Frontend logic & API client
-│   └── index.html            # Main dashboard UI
-├── README.md                 # User-facing documentation
+│   │   ├── vuln_scan.py      # Security headers + sensitive files
+│   │   ├── ssl_scan.py       # SSL/TLS analysis
+│   │   ├── cors_scan.py      # CORS misconfiguration
+│   │   ├── cookie_scan.py    # Cookie security audit
+│   │   ├── tech_detect.py    # Technology fingerprinting
+│   │   ├── dns_scan.py       # DNS enumeration
+│   │   ├── load_test.py      # HTTP load generation
+│   │   ├── ddos_test.py      # DDoS resilience testing
+│   │   ├── rate_limit_test.py # API rate limit detection
+│   │   └── xss_scan.py       # Reflected XSS scanning
+│   ├── models/               # Pydantic schemas
+│   │   └── scan.py           # Request/response models
+│   ├── database/             # Persistence layer
+│   │   └── db.py             # SQLite CRUD operations
+│   ├── utils/                # Shared utilities
+│   │   └── validators.py     # URL validation + sanitization
+│   └── main.py               # App factory + startup
+├── frontend/                 # Client-side
+│   ├── static/
+│   │   ├── js/               # ES Modules
+│   │   │   ├── app.js        # Entry point
+│   │   │   ├── api.js        # Fetch wrappers
+│   │   │   ├── results.js    # Result rendering
+│   │   │   ├── score.js      # Score gauge SVG
+│   │   │   ├── history.js    # History sidebar
+│   │   │   ├── theme.js      # Dark/light toggle
+│   │   │   └── utils.js      # DOM helpers
+│   │   └── style.css         # MD3 design tokens
+│   └── index.html            # Dashboard
+├── README.md                 # User-facing docs
 ├── DEVELOPMENT.md            # This file
 ├── CHANGELOG.md              # Version history
 ├── LICENSE.md                # License terms
-└── pyproject.toml            # Project dependencies (uv)
+└── pyproject.toml            # Dependencies (uv)
 ```
 
 ---
@@ -81,8 +122,44 @@ localghost/
 | Type | Convention | Good Example | Bad Example |
 |------|-----------|--------------|-------------|
 | **Python Modules** | `snake_case` | `port_scan.py` | `PortScan.py` |
-| **Frontend Assets** | `snake_case` / `kebab-case` | `style.css`, `app.js` | `Styles.css` |
-| **Components** | `snake_case` | `load_test.py` | `LoadTest` |
+| **Frontend JS** | `snake_case` | `app.js`, `utils.js` | `App.js` |
+| **CSS Files** | `kebab-case` | `style.css` | `Styles.css` |
+
+### Functions & Methods
+
+| Prefix | Purpose | Example |
+|--------|---------|---------|
+| `scan_` / `check_` | Scanner functions | `scan_ports()`, `check_vulnerabilities()` |
+| `get_` / `save_` | Database CRUD | `get_scan()`, `save_scan()` |
+| `render_` | Frontend rendering | `renderResults()`, `renderScoreGauge()` |
+| `compute_` | Business logic | `compute_score()` |
+| `validate_` | Input validation | `validate_target_url()` |
+| `init_` | Initialization | `initTheme()`, `initSidebar()` |
+
+---
+
+## Database Schema
+
+### Models Overview (1 total)
+
+| Model | Purpose | Key Fields |
+|-------|---------|------------|
+| **scans** | Stores scan results and scores | `scan_id`, `target_url`, `timestamp`, `score`, `grade`, `results_json` |
+
+### Schema
+
+```sql
+CREATE TABLE scans (
+    scan_id     TEXT PRIMARY KEY,
+    target_url  TEXT NOT NULL,
+    timestamp   TEXT NOT NULL,
+    score       INTEGER DEFAULT 0,
+    grade       TEXT DEFAULT 'F',
+    results_json TEXT NOT NULL
+);
+
+CREATE INDEX idx_scans_timestamp ON scans(timestamp DESC);
+```
 
 ---
 
@@ -92,7 +169,28 @@ localghost/
 
 | Environment | URL |
 |-------------|-----|
-| Local | `http://localhost:8000` |
+| Local | `http://localhost:13666` |
+
+### Request / Response Format
+
+| Detail | Value |
+|--------|-------|
+| **Content-Type** | `application/json` |
+| **Date format** | ISO 8601 (`YYYY-MM-DDTHH:mm:ssZ`) |
+
+### Error Responses
+
+```json
+{
+  "detail": "Error message describing what went wrong"
+}
+```
+
+| Status | When |
+|--------|------|
+| `400` | Invalid target URL or request body |
+| `404` | Scan not found in history |
+| `500` | Unexpected server failure |
 
 ### Endpoints
 
@@ -100,7 +198,52 @@ localghost/
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `POST` | `/api/scan` | None | Initiates a multi-stage scan (ports, vulns, benchmarks). |
+| `POST` | `/api/scan` | None | Execute a multi-module security scan. |
+
+**Request Body:**
+```json
+{
+  "target_url": "http://127.0.0.1:3000",
+  "modules": {
+    "port_scan": true,
+    "vuln_scan": true,
+    "ssl_scan": true,
+    "cors_scan": true,
+    "cookie_scan": true,
+    "tech_detect": true,
+    "dns_scan": true,
+    "load_test": false,
+    "ddos_test": false,
+    "rate_limit_test": false,
+    "xss_scan": false
+  },
+  "benchmark_config": {
+    "concurrency": 50,
+    "duration_seconds": 5
+  }
+}
+```
+
+#### History
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/history` | None | List past scans (paginated, `?limit=50&offset=0`). |
+| `GET` | `/api/history/{scan_id}` | None | Get a specific scan result. |
+| `DELETE` | `/api/history/{scan_id}` | None | Delete a scan entry. |
+| `DELETE` | `/api/history` | None | Clear all history. |
+
+#### Report
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/report/{scan_id}` | None | Download scan report as JSON file. |
+
+#### Health
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/health` | None | Health check endpoint. |
 
 ---
 
@@ -109,14 +252,17 @@ localghost/
 > [!CAUTION]
 > Never commit `.env` files. Localghost currently uses system defaults, but future integrations (e.g., Slack notifications) will require environment configuration.
 
+No environment variables are required for local operation.
+
 ---
 
 ## Security Practices
 
 ### Input Validation & Sanitization
 
-- Target URLs are validated and normalized in `backend/main.py`.
-- Pydantic models are used for request body validation.
+- All target URLs are validated and normalized in `backend/utils/validators.py`.
+- Pydantic models enforce type safety and constraints on all API inputs.
+- URL length capped at 2048 characters.
 
 ### Dependency Auditing
 
@@ -131,8 +277,19 @@ uv run pip-audit
 
 ### Server-Side
 
-- All API routes use `try/catch` blocks returned as standardized `HTTPException` responses.
-- Asynchronous tasks use `asyncio.gather` with selective error suppression to ensure one failed scan doesn't crash the entire report.
+| Layer | Strategy |
+|-------|----------|
+| **Route handlers** | `try/catch` with `HTTPException` responses (400/404/500). |
+| **Scanner modules** | Individual scanner failures are caught and don't crash the entire scan. |
+| **Database** | DB save failures are silently caught — scan results still return to the user. |
+| **Orchestrator** | `asyncio.gather` with `return_exceptions=True` isolates module failures. |
+
+### Client-Side
+
+| Layer | Strategy |
+|-------|----------|
+| **API calls** | Centralized `api.js` with error extraction from response body. |
+| **Scan form** | Error messages logged to TUI terminal panel. |
 
 ---
 
@@ -141,7 +298,7 @@ uv run pip-audit
 ### Running Tests
 
 ```bash
-# Run all tests (WIP)
+# All tests (WIP)
 uv run pytest
 ```
 
@@ -149,27 +306,35 @@ uv run pytest
 
 ## Commands
 
-### `uv run python backend/main.py`
+### `uv run python -m backend.main`
 
-Starts the Localghost development server.
+Starts the Localghost development server on `http://127.0.0.1:13666`. Includes auto-reload.
 
 ---
 
 ## Intended Changes
 
-### Upcoming
-
-| Change | Impact | Target Version |
-|--------|--------|----------------|
-| **Docker Support** | Easier deployment for isolated testing. | `0.2.0` |
-| **Export Reports** | Generate PDF/JSON security reports. | `0.2.0` |
-| **Extended Vuln DB** | Check for more common local misconfigs. | `0.3.0` |
-
 ---
 
 ## Project Auditing & Quality Standards
 
-Localghost adheres to strict performance and security standards for local tools. Every change must be audited for resource leaks (especially during load tests) and side effects on the target system.
+> A structured approach to ensuring the project is correct, secure, and maintainable.
+
+### Audit Categories
+
+| Category | Focus Areas |
+|----------|-------------|
+| **Correctness** | Logical errors, edge-case failures, silent failures, data integrity |
+| **Security** | Vulnerabilities, input weaknesses, sensitive data exposure |
+| **Performance** | Scanner efficiency, connection limits, resource usage |
+| **Architecture** | Layer separation, module coupling, scalability |
+| **Maintainability** | Readability, naming consistency, technical debt |
+| **Documentation** | Accuracy, completeness, implementation-spec matching |
+
+### Reporting Process
+
+- All findings must be added to [TASKS.md](TASKS.md).
+- Entries must be **Clear**, **Actionable**, and **Concisely described**.
 
 ---
 
@@ -179,8 +344,10 @@ Localghost adheres to strict performance and security standards for local tools.
 
 | Issue | Solution |
 |-------|----------|
-| **CORS Errors** | Ensure the target server allows requests from `localhost:8000`. |
-| **Port Scan Timeout** | Increase the timeout in `backend/scanner/port_scan.py` for slow networks. |
+| **CORS Errors** | Ensure the target server allows requests from `localhost:13666`. |
+| **Port Scan Timeout** | Increase the timeout in `backend/scanners/port_scan.py` (default: 0.5s). |
+| **aiosqlite not found** | Run `uv sync` to install new dependencies. |
+| **Module not found** | Run from the `localghost/localghost/` directory, not the repo root. |
 
 ---
 

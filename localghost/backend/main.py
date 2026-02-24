@@ -1,54 +1,70 @@
-from fastapi import FastAPI, HTTPException
+"""Localghost — FastAPI application entry point."""
+
+import os
+import logging
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
-from typing import List, Optional
-import os
 
-from backend.scanner.port_scan import scan_ports
-from backend.scanner.vuln_scan import check_vulnerabilities
-from backend.benchmark.load_test import run_load_test
+from backend.routers import scan, history, report
+from backend.database.db import init_db
 
-app = FastAPI(title="Localghost", description="Localhost Pentesting & Benchmarking Tool")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S"
+)
+logger = logging.getLogger("localghost")
 
-# Ensure frontend directory path is absolute or relative to the current working directory
-frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+# Localghost's own port — other scanners should exclude this
+LOCALGHOST_PORT = 13666
 
-# Mount static files (css, js)
-app.mount("/static", StaticFiles(directory=os.path.join(frontend_dir, "static")), name="static")
+# Resolve paths relative to this file
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+STATIC_DIR = os.path.join(FRONTEND_DIR, "static")
 
-class ScanRequest(BaseModel):
-    target_url: str
-    ports_to_scan: Optional[List[int]] = None
-    run_benchmark: bool = False
-    run_vuln_check: bool = True
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifecycle: initialize DB on startup."""
+    logger.info("Initializing database...")
+    await init_db()
+    logger.info("Localghost is ready. 👻")
+    yield
+    logger.info("Localghost shutting down.")
+
+
+app = FastAPI(
+    title="Localghost",
+    description="Localhost Pentesting & Benchmarking Toolkit",
+    version="0.2.0",
+    lifespan=lifespan,
+)
+
+# Register routers
+app.include_router(scan.router)
+app.include_router(history.router)
+app.include_router(report.router)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 
 @app.get("/")
-async def read_index():
-    return FileResponse(os.path.join(frontend_dir, "index.html"))
+async def serve_index():
+    """Serve the frontend dashboard."""
+    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
-@app.post("/api/scan")
-async def perform_scan(request: ScanRequest):
-    try:
-        # 1. Port Scanning
-        open_ports = await scan_ports(request.target_url, request.ports_to_scan)
-        
-        # 2. Vulnerability Checking
-        vuln_results = {}
-        if request.run_vuln_check:
-            vuln_results = await check_vulnerabilities(request.target_url)
-            
-        # 3. Benchmarking
-        benchmark_results = {}
-        if request.run_benchmark:
-            benchmark_results = await run_load_test(request.target_url)
 
-        return {
-            "status": "success",
-            "target": request.target_url,
-            "open_ports": open_ports,
-            "vulnerabilities": vuln_results,
-            "benchmark": benchmark_results
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.get("/health")
+async def health_check():
+    """Simple health check endpoint."""
+    return {"status": "alive", "version": "0.2.0"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=LOCALGHOST_PORT, reload=True)

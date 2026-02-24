@@ -1,75 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Localghost | Local Security & Benchmark Tool</title>
+    <meta name="description"
+        content="Localghost — Possess & analyze local running servers with a hauntingly efficient pentesting & benchmarking toolkit.">
+    <title>Localghost | Security & Benchmark Dashboard</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-    <div class="glow-sphere t-left"></div>
-    <div class="glow-sphere b-right"></div>
-    
-    <main class="container">
-        <header>
-            <h1 class="glitch" data-text="LOCALGHOST">LOCALGHOST</h1>
-            <p class="subtitle">Possess & analyze local running servers</p>
-        </header>
+    <!-- Top App Bar -->
+    <header class="top-bar" id="top-bar">
+        <div class="top-bar__leading">
+            <button class="icon-btn md-ripple" id="menu-toggle" aria-label="Toggle sidebar">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="top-bar__brand">
+                <span class="top-bar__logo">👻</span>
+                <h1 class="top-bar__title">LOCALGHOST</h1>
+            </div>
+        </div>
+        <div class="top-bar__trailing">
+            <button class="icon-btn md-ripple" id="theme-toggle" aria-label="Toggle theme">
+                <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+            </button>
+        </div>
+    </header>
 
-        <section class="target-card">
-            <form id="scan-form">
-                <div class="input-group">
-                    <label for="target-url">Target URL</label>
-                    <input type="text" id="target-url" placeholder="http://127.0.0.1:8000" required>
+    <div class="app-layout">
+        <!-- Sidebar / Navigation Rail -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar__content">
+                <!-- Scan Configuration Panel -->
+                <div class="sidebar__section">
+                    <h3 class="sidebar__heading">
+                        <span class="material-symbols-outlined">target</span>
+                        Target
+                    </h3>
+                    <form id="scan-form">
+                        <div class="md-field">
+                            <input type="text" id="target-url" class="md-input" placeholder=" " required
+                                autocomplete="off">
+                            <label for="target-url" class="md-label">Target URL</label>
+                            <span class="md-field__helper">e.g. http://127.0.0.1:3000</span>
+                        </div>
+
+                        <h3 class="sidebar__heading">
+                            <span class="material-symbols-outlined">tune</span>
+                            Modules
+                        </h3>
+
+                        <div class="module-toggles">
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-ports" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">Port Scan</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-vulns" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">Vuln Scan</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-ssl" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">SSL/TLS</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-cors" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">CORS</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-cookies" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">Cookies</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-tech" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">Tech Detect</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-dns" checked>
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">DNS</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-bench">
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">Load Test</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-ddos">
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">DDoS Test</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-ratelimit">
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">Rate Limit</span>
+                            </label>
+                            <label class="md-switch">
+                                <input type="checkbox" id="mod-xss">
+                                <span class="md-switch__track"><span class="md-switch__thumb"></span></span>
+                                <span class="md-switch__label">XSS Scan</span>
+                            </label>
+                        </div>
+
+                        <!-- Benchmark Config (shown only when load test is enabled) -->
+                        <div class="bench-config hidden" id="bench-config">
+                            <h3 class="sidebar__heading">
+                                <span class="material-symbols-outlined">speed</span>
+                                Load Test Config
+                            </h3>
+                            <div class="md-field md-field--compact">
+                                <input type="number" id="bench-concurrency" class="md-input" value="50" min="1"
+                                    max="500" placeholder=" ">
+                                <label for="bench-concurrency" class="md-label">Concurrency</label>
+                            </div>
+                            <div class="md-field md-field--compact">
+                                <input type="number" id="bench-duration" class="md-input" value="5" min="1" max="60"
+                                    placeholder=" ">
+                                <label for="bench-duration" class="md-label">Duration (s)</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="md-btn md-btn--filled" id="scan-btn">
+                            <span class="material-symbols-outlined">play_arrow</span>
+                            <span id="scan-btn-text">Start Scan</span>
+                        </button>
+                    </form>
                 </div>
-                
-                <div class="options-group">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="run-vuln" checked>
-                        <span class="checkmark"></span>
-                        Vulnerability Auth
-                    </label>
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="run-bench" checked>
-                        <span class="checkmark"></span>
-                        Load Test
-                    </label>
-                </div>
 
-                <button type="submit" id="scan-btn" class="hack-btn">
-                    <span>INITIATE_POSSESSION</span>
-                    <div class="loader hidden" id="scan-loader"></div>
-                </button>
-            </form>
-        </section>
-
-        <section id="results-container" class="results-card hidden">
-            <h2>Possession Report</h2>
-            
-            <div class="tabs">
-                <button class="tab-btn active" data-target="ports">Ports</button>
-                <button class="tab-btn" data-target="vulns">Vulnerabilities</button>
-                <button class="tab-btn" data-target="bench">Benchmark</button>
-            </div>
-
-            <div class="tab-content active" id="ports">
-                <div class="terminal-box" id="ports-res"></div>
-            </div>
-            
-            <div class="tab-content" id="vulns">
-                <div class="terminal-box" id="vulns-res"></div>
-            </div>
-
-            <div class="tab-content" id="bench">
-                <div class="stats-grid" id="bench-res">
-                    <!-- Dynamic stats will go here -->
+                <!-- History Section -->
+                <div class="sidebar__section">
+                    <h3 class="sidebar__heading">
+                        <span class="material-symbols-outlined">history</span>
+                        Recent Scans
+                    </h3>
+                    <div id="history-list" class="history-list">
+                        <p class="history-list__empty">No scans yet</p>
+                    </div>
                 </div>
             </div>
-        </section>
-    </main>
-    <script src="/static/app.js"></script>
+        </aside>
+
+        <!-- Sidebar overlay for mobile -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-content">
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state">
+                <span class="material-symbols-outlined empty-state__icon">radar</span>
+                <h2 class="empty-state__title">Ready to Possess</h2>
+                <p class="empty-state__desc">Enter a target URL and start scanning to analyze your local server's
+                    security posture.</p>
+            </div>
+
+            <!-- Scan Progress -->
+            <div class="scan-progress hidden" id="scan-progress">
+                <div class="md-card">
+                    <div class="progress-header">
+                        <span class="material-symbols-outlined spinning">sync</span>
+                        <span id="progress-text">Scanning target...</span>
+                    </div>
+                    <div class="md-progress">
+                        <div class="md-progress__bar" id="progress-bar"></div>
+                    </div>
+                    <!-- TUI Terminal Output -->
+                    <div class="tui-terminal" id="tui-terminal">
+                        <div class="tui-terminal__header">
+                            <span class="tui-terminal__dot tui-terminal__dot--red"></span>
+                            <span class="tui-terminal__dot tui-terminal__dot--yellow"></span>
+                            <span class="tui-terminal__dot tui-terminal__dot--green"></span>
+                            <span class="tui-terminal__title">localghost://scan</span>
+                        </div>
+                        <div class="tui-terminal__body" id="terminal-output">
+                            <div class="tui-line">> Initializing scan engine...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Dashboard -->
+            <div class="results-dashboard hidden" id="results-dashboard">
+                <!-- Score + Stats Row -->
+                <div class="score-stats-row">
+                    <!-- Score Gauge -->
+                    <div class="md-card score-card">
+                        <div class="score-gauge" id="score-gauge">
+                            <svg viewBox="0 0 200 200" class="score-gauge__svg">
+                                <circle cx="100" cy="100" r="85" class="score-gauge__bg" />
+                                <circle cx="100" cy="100" r="85" class="score-gauge__fill" id="score-arc"
+                                    stroke-dasharray="534" stroke-dashoffset="534" />
+                            </svg>
+                            <div class="score-gauge__text">
+                                <span class="score-gauge__value" id="score-value">0</span>
+                                <span class="score-gauge__grade" id="score-grade">—</span>
+                            </div>
+                        </div>
+                        <div class="score-card__label">Security Score</div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="quick-stats" id="quick-stats">
+                        <div class="md-card stat-chip stat-chip--findings">
+                            <span class="material-symbols-outlined">bug_report</span>
+                            <div class="stat-chip__content">
+                                <span class="stat-chip__value" id="stat-findings">0</span>
+                                <span class="stat-chip__label">Findings</span>
+                            </div>
+                        </div>
+                        <div class="md-card stat-chip stat-chip--ports">
+                            <span class="material-symbols-outlined">lan</span>
+                            <div class="stat-chip__content">
+                                <span class="stat-chip__value" id="stat-ports">0</span>
+                                <span class="stat-chip__label">Open Ports</span>
+                            </div>
+                        </div>
+                        <div class="md-card stat-chip stat-chip--critical">
+                            <span class="material-symbols-outlined">error</span>
+                            <div class="stat-chip__content">
+                                <span class="stat-chip__value" id="stat-critical">0</span>
+                                <span class="stat-chip__label">Critical</span>
+                            </div>
+                        </div>
+                        <div class="md-card stat-chip stat-chip--tech">
+                            <span class="material-symbols-outlined">code</span>
+                            <div class="stat-chip__content">
+                                <span class="stat-chip__value" id="stat-tech">0</span>
+                                <span class="stat-chip__label">Technologies</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score Breakdown -->
+                <div class="md-card breakdown-card" id="breakdown-card">
+                    <h3 class="card-title">
+                        <span class="material-symbols-outlined">analytics</span>
+                        Score Breakdown
+                    </h3>
+                    <div class="breakdown-bars" id="breakdown-bars"></div>
+                </div>
+
+                <!-- Results Tabs -->
+                <div class="md-card results-card">
+                    <div class="results-tabs" id="results-tabs">
+                        <button class="results-tab active" data-tab="all-findings">
+                            <span class="material-symbols-outlined">shield</span>
+                            <span>All Findings</span>
+                        </button>
+                        <button class="results-tab" data-tab="ports">
+                            <span class="material-symbols-outlined">lan</span>
+                            <span>Ports</span>
+                        </button>
+                        <button class="results-tab" data-tab="headers">
+                            <span class="material-symbols-outlined">security</span>
+                            <span>Headers</span>
+                        </button>
+                        <button class="results-tab" data-tab="ssl">
+                            <span class="material-symbols-outlined">lock</span>
+                            <span>SSL/TLS</span>
+                        </button>
+                        <button class="results-tab" data-tab="cors">
+                            <span class="material-symbols-outlined">public</span>
+                            <span>CORS</span>
+                        </button>
+                        <button class="results-tab" data-tab="cookies">
+                            <span class="material-symbols-outlined">cookie</span>
+                            <span>Cookies</span>
+                        </button>
+                        <button class="results-tab" data-tab="tech">
+                            <span class="material-symbols-outlined">code</span>
+                            <span>Tech</span>
+                        </button>
+                        <button class="results-tab" data-tab="dns">
+                            <span class="material-symbols-outlined">dns</span>
+                            <span>DNS</span>
+                        </button>
+                        <button class="results-tab" data-tab="benchmark">
+                            <span class="material-symbols-outlined">speed</span>
+                            <span>Benchmark</span>
+                        </button>
+                        <button class="results-tab" data-tab="ddos">
+                            <span class="material-symbols-outlined">bolt</span>
+                            <span>DDoS</span>
+                        </button>
+                        <button class="results-tab" data-tab="ratelimit">
+                            <span class="material-symbols-outlined">block</span>
+                            <span>Rate Limit</span>
+                        </button>
+                        <button class="results-tab" data-tab="xss">
+                            <span class="material-symbols-outlined">bug_report</span>
+                            <span>XSS</span>
+                        </button>
+                    </div>
+
+                    <div class="results-panels">
+                        <div class="results-panel active" id="panel-all-findings"></div>
+                        <div class="results-panel" id="panel-ports"></div>
+                        <div class="results-panel" id="panel-headers"></div>
+                        <div class="results-panel" id="panel-ssl"></div>
+                        <div class="results-panel" id="panel-cors"></div>
+                        <div class="results-panel" id="panel-cookies"></div>
+                        <div class="results-panel" id="panel-tech"></div>
+                        <div class="results-panel" id="panel-dns"></div>
+                        <div class="results-panel" id="panel-benchmark"></div>
+                        <div class="results-panel" id="panel-ddos"></div>
+                        <div class="results-panel" id="panel-ratelimit"></div>
+                        <div class="results-panel" id="panel-xss"></div>
+                    </div>
+                </div>
+
+                <!-- Actions Bar -->
+                <div class="actions-bar">
+                    <button class="md-btn md-btn--outlined" id="export-json-btn">
+                        <span class="material-symbols-outlined">download</span>
+                        Export JSON
+                    </button>
+                    <button class="md-btn md-btn--text" id="clear-results-btn">
+                        <span class="material-symbols-outlined">delete</span>
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/static/js/app.js"></script>
 </body>
+
 </html>
