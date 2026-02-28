@@ -1,10 +1,16 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.6
-> **Last Updated:** 2026-02-24
+> **Version:** 0.0.7
+> **Last Updated:** 2026-02-28
 
 ---
+
+## [0.0.7] - 2026-02-28
+
+- Display confirmed observations, review items, incomplete checks, and diagnostic results.
+- Show redacted request/response evidence, source excerpts, and suggested changes.
+- Add printable report views with findings, metrics, and scope.
 
 ## [0.0.6] - 2026-02-24
 

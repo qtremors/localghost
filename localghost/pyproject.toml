@@ -1,6 +1,6 @@
 [project]
 name = "localghost"
-version = "0.0.6"
+version = "0.0.7"
 description = "Scan local projects for security issues and measure performance."
 readme = "../README.md"
 requires-python = ">=3.12"
