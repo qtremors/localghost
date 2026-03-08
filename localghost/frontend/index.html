@@ -1,11 +1,892 @@
 <!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Localghost</title><link rel="stylesheet" href="/static/style.css"></head>
-<body>
-<main>
-<h1>Localghost</h1>
-<p>Check running local web apps, inspect evidence, and verify fixes.</p>
-<p><a href="/docs">Open the API documentation</a></p>
-</main>
-</body>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+            name="description"
+            content="Check running web apps, inspect evidence, and check fixes again."
+        />
+        <meta name="theme-color" content="#12251f" />
+        <title>Localghost · Project scanner</title>
+        <link rel="icon" type="image/svg+xml" href="/static/ghost.svg" />
+        <link rel="stylesheet" href="/static/style.css" />
+        <link rel="stylesheet" href="/static/workspace.css" />
+    </head>
+    <body>
+        <a class="skip-link" href="#main-content">Skip to content</a>
+        <aside class="sidebar" id="sidebar" aria-label="Navigation">
+            <a class="brand" href="#home" data-view="home" aria-label="Localghost home"
+                ><img src="/static/ghost.svg" alt="" width="35" height="35" /><span
+                    >localghost<span class="brand-subtitle">LOCAL PROJECT SCANNER</span></span
+                ></a
+            >
+            <div class="workspace-switch">
+                <span class="workspace-avatar material-symbols-outlined" aria-hidden="true">computer</span
+                ><span><strong>Local projects</strong><small>This machine</small></span
+                ><span class="workspace-dot" aria-hidden="true"></span>
+            </div>
+            <button type="button" class="md-btn md-btn--filled sidebar-new" data-view="scan">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>New scan<span class="shortcut"
+                    >↵</span
+                >
+            </button>
+            <p class="nav-caption">MENU</p>
+            <nav class="primary-nav" aria-label="Main navigation">
+                <button type="button" class="nav-item active" data-view="home" aria-current="page">
+                    <span class="material-symbols-outlined" aria-hidden="true">space_dashboard</span>Projects
+                </button>
+                <button type="button" class="nav-item" data-view="reports">
+                    <span class="material-symbols-outlined" aria-hidden="true">description</span>Reports<span
+                        class="nav-count"
+                        id="nav-report-count"
+                        >0</span
+                    >
+                </button>
+                <button type="button" class="nav-item hidden" id="current-report-nav" data-view="report">
+                    <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>Current report
+                </button>
+                <button type="button" class="nav-item hidden" id="running-scan-nav" data-view="progress">
+                    <span class="material-symbols-outlined spinning" aria-hidden="true">progress_activity</span>Running
+                    scan
+                </button>
+            </nav>
+            <div class="sidebar-recents">
+                <p class="nav-caption">RECENT PROJECTS</p>
+                <div id="recent-projects"><p class="sidebar-note">Scanned projects appear here.</p></div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="local-mode">
+                    <span class="material-symbols-outlined" aria-hidden="true">verified_user</span
+                    ><span><strong>Local reports</strong><small>Saved on this server</small></span>
+                </div>
+                <div class="sidebar-footer-bottom">
+                    <span>Localghost <span class="version-tag">v0.2</span></span
+                    ><button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch theme">
+                        <span class="material-symbols-outlined" id="theme-icon" aria-hidden="true">dark_mode</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        <div class="workspace-shell">
+            <header class="top-bar">
+                <div class="top-bar__leading">
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        id="menu-toggle"
+                        aria-label="Open navigation"
+                        aria-controls="sidebar"
+                        aria-expanded="false"
+                    >
+                        <span class="material-symbols-outlined" aria-hidden="true">menu</span></button
+                    ><span class="breadcrumb">Localghost<span>/</span><strong id="view-label">Projects</strong></span>
+                </div>
+                <div class="top-bar__trailing">
+                    <button type="button" class="top-new-scan" data-view="scan">
+                        <span class="material-symbols-outlined" aria-hidden="true">add</span>New scan
+                    </button>
+                </div>
+            </header>
+            <main class="main-content" id="main-content" tabindex="-1">
+                <div id="app-status" class="sr-only" role="status" aria-live="polite"></div>
+                <section id="empty-state" class="workspace-view" aria-labelledby="projects-heading">
+                    <div class="page-heading">
+                        <div>
+                            <h1 id="projects-heading" tabindex="-1">Projects</h1>
+                            <p>Scan local apps and view their reports.</p>
+                        </div>
+                        <button type="button" class="md-btn md-btn--filled" id="configure-btn" data-view="scan">
+                            <span class="material-symbols-outlined" aria-hidden="true">add</span>Scan a project
+                        </button>
+                    </div>
+                    <div class="workspace-summary">
+                        <div>
+                            <span class="summary-label">Projects scanned</span
+                            ><strong id="workspace-project-count">0</strong>
+                        </div>
+                        <div>
+                            <span class="summary-label">Saved reports</span
+                            ><strong id="workspace-report-count">0</strong>
+                        </div>
+                        <div>
+                            <span class="summary-label">Latest scan</span
+                            ><strong id="workspace-last-scan" class="summary-date">No scans yet</strong>
+                        </div>
+                    </div>
+                    <section class="discovery-banner" aria-labelledby="discover-heading">
+                        <div class="discovery-art" aria-hidden="true">
+                            <div class="discovery-orbit"></div>
+                            <span class="material-symbols-outlined">radar</span><i></i><i></i>
+                        </div>
+                        <div>
+                            <h2 id="discover-heading">Find running apps</h2>
+                            <p>Check common local ports for running web apps.</p>
+                            <p class="discovery-scope">
+                                Checks the machine running Localghost. To scan another local address, enter its URL.
+                            </p>
+                        </div>
+                        <button type="button" class="md-btn md-btn--outlined" id="discover-btn">
+                            <span class="material-symbols-outlined" aria-hidden="true">radar</span
+                            ><span>Find apps</span>
+                        </button>
+                    </section>
+                    <div class="docker-discovery"><button type="button" class="md-btn md-btn--outlined" id="docker-discover-btn"><span class="material-symbols-outlined" aria-hidden="true">deployed_code</span><span>Find Docker apps</span></button><p class="config-note">Uses published ports from your local Docker daemon. Source folders are suggested from bind mounts.</p></div>
+                    <p class="config-note discovery-status" id="docker-status" role="status"></p><div id="docker-projects" class="discovered-projects"></div>
+                    <p class="config-note discovery-status" id="discovery-status" role="status"></p>
+                    <div class="discovered-projects" id="discovered-projects"></div>
+                    <div class="section-heading projects-section-heading">
+                        <div>
+                            <h2>Scanned projects <span class="count-label" id="projects-count-label">0</span></h2>
+                            <p>Open a saved report or run another scan.</p>
+                        </div>
+                        <button type="button" class="text-link" data-view="reports">
+                            All reports<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                        </button>
+                    </div>
+                    <p id="workspace-status" class="config-note" role="status"></p>
+                    <div class="project-grid" id="project-grid"></div>
+                    <button type="button" class="md-btn md-btn--outlined hidden" id="projects-more">
+                        Load more projects
+                    </button>
+                    <div class="getting-started" id="getting-started">
+                        <div class="empty-project-icon">
+                            <span class="material-symbols-outlined" aria-hidden="true">deployed_code</span>
+                        </div>
+                        <h3>No projects scanned</h3>
+                        <p>Start an app, then enter its local URL to scan it.</p>
+                        <button type="button" class="text-link" data-view="scan">
+                            New scan<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                        </button>
+                    </div>
+                    <p class="workspace-footnote">
+                        <span class="material-symbols-outlined" aria-hidden="true">info</span>Project cards show the
+                        last saved scan, not the app’s current status.
+                    </p>
+                </section>
+                <section id="scan-setup" class="workspace-view hidden" aria-labelledby="scan-heading">
+                    <button type="button" class="back-link" data-view="home">
+                        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>All projects
+                    </button>
+                    <div class="page-heading">
+                        <div>
+                            <h1 id="scan-heading" tabindex="-1">New scan</h1>
+                            <p>Enter a project URL and select checks.</p>
+                        </div>
+                    </div>
+                    <form id="scan-form" class="scan-layout">
+                        <div class="scan-main">
+                            <section class="md-card setup-card">
+                                <div class="setup-section-title">
+                                    <span class="section-number">01</span>
+                                    <div>
+                                        <h2>Project URL</h2>
+                                        <p>Enter the address of a running app.</p>
+                                    </div>
+                                </div>
+                                <div class="search-field target-field">
+                                    <label for="target-url">Project URL</label>
+                                    <div class="url-input-wrap">
+                                        <span class="material-symbols-outlined" aria-hidden="true">link</span
+                                        ><input
+                                            type="text"
+                                            id="target-url"
+                                            placeholder="http://localhost:3000"
+                                            required
+                                            maxlength="2048"
+                                            autocomplete="url"
+                                            spellcheck="false"
+                                            aria-describedby="target-help"
+                                        />
+                                    </div>
+                                </div>
+                                <p id="target-help" class="config-note">Use localhost or a private network address. For Docker, use the published port.</p>
+                                <div class="project-context-fields">
+                                    <label class="search-field" for="source-path">Source folder <span class="optional-label">Optional</span>
+                                        <input id="source-path" type="text" placeholder="/home/you/projects/my-app" autocomplete="off" spellcheck="false" maxlength="4096" aria-describedby="source-help" />
+                                    </label>
+                                    <button type="button" id="inspect-source-btn" class="md-btn md-btn--outlined">Read project details</button>
+                                </div>
+                                <p class="config-note" id="source-help">An absolute path on the machine running Localghost. Files are read locally; configuration is never executed.</p>
+                                <p id="source-status" class="config-note" role="status"></p>
+                                <div id="source-route-choices" class="route-choices"></div>
+                                <label class="search-field context-environment" for="scan-environment">App version
+                                    <select id="scan-environment"><option value="development">Development server</option><option value="production">Production build</option></select>
+                                </label>
+                                <div class="url-examples">
+                                    <span>Example URLs</span
+                                    ><button type="button" data-example="http://localhost:3000">:3000</button
+                                    ><button type="button" data-example="http://localhost:5173">:5173</button
+                                    ><button type="button" data-example="http://localhost:8000">:8000</button>
+                                </div>
+                            </section>
+                            <section class="md-card setup-card">
+                                <div class="setup-section-title">
+                                    <span class="section-number">02</span>
+                                    <div>
+                                        <h2>Checks</h2>
+                                        <p>Select a preset or choose checks individually.</p>
+                                    </div>
+                                </div>
+                                <div class="preset-controls" role="group" aria-label="Scan preset">
+                                    <button type="button" class="preset-btn" data-preset="audit" aria-pressed="true">
+                                        <span class="material-symbols-outlined" aria-hidden="true">shield</span
+                                        ><strong>App checks</strong><small>Server and browser</small
+                                        ><span class="preset-recommended">Recommended</span></button
+                                    ><button type="button" class="preset-btn" data-preset="quick" aria-pressed="false">
+                                        <span class="material-symbols-outlined" aria-hidden="true">search</span
+                                        ><strong>Quick scan</strong><small>Ports, software & DNS</small></button
+                                    ><button type="button" class="preset-btn" data-preset="custom" aria-pressed="false">
+                                        <span class="material-symbols-outlined" aria-hidden="true">tune</span
+                                        ><strong>Custom scan</strong><small>Select checks</small>
+                                    </button>
+                                </div>
+                                <div class="module-group-heading">
+                                    <h3>Project & security checks</h3>
+                                    <span class="config-note" id="module-count">8 of 13 checks selected</span>
+                                </div>
+                                <div class="module-toggles">
+                                    <label class="module-option"
+                                        ><input type="checkbox" id="mod-ports" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >hub</span
+                                        ><span class="module-option__text"
+                                            ><strong>Ports & services</strong
+                                            ><span>Check which ports accept connections.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-vulns" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >shield</span
+                                        ><span class="module-option__text"
+                                            ><strong>Headers & files</strong
+                                            ><span>Check security headers and exposed files.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-ssl" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >lock</span
+                                        ><span class="module-option__text"
+                                            ><strong>TLS certificate</strong
+                                            ><span>Check the TLS certificate and encryption.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-cors" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >public</span
+                                        ><span class="module-option__text"
+                                            ><strong>Cross-origin access</strong
+                                            ><span>Check which sites can read responses.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-cookies" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >cookie</span
+                                        ><span class="module-option__text"
+                                            ><strong>Cookie security</strong
+                                            ><span>Check session flags and cookie settings.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-tech" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >code</span
+                                        ><span class="module-option__text"
+                                            ><strong>Software</strong
+                                            ><span>Identify frameworks and server software.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-dns" checked /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >dns</span
+                                        ><span class="module-option__text"
+                                            ><strong>DNS & addresses</strong
+                                            ><span>Look up the app’s IP addresses.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    >
+                                </div>
+                                <div class="module-toggles extra-project-checks">
+                                    <label class="module-option"><input type="checkbox" id="mod-browser" checked /><span class="module-option__icon material-symbols-outlined" aria-hidden="true">web</span><span class="module-option__text"><strong>Pages in a browser</strong><span>Find JavaScript errors and failed requests on selected pages.</span></span><span class="module-check material-symbols-outlined" aria-hidden="true">check</span></label>
+                                    <label class="module-option"><input type="checkbox" id="mod-source" /><span class="module-option__icon material-symbols-outlined" aria-hidden="true">folder_open</span><span class="module-option__text"><strong>Project configuration</strong><span>Read framework settings and list routes from the source folder.</span></span><span class="module-check material-symbols-outlined" aria-hidden="true">check</span></label>
+                                </div>
+                                <div class="module-group-heading active-group-heading">
+                                    <h3>Traffic and input tests</h3>
+                                    <span class="tag">Optional</span>
+                                </div>
+                                <p class="config-note active-test-intro">These tests send extra requests to the app.</p>
+                                <div class="module-toggles">
+                                    <label class="module-option"
+                                        ><input type="checkbox" id="mod-bench" /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >speed</span
+                                        ><span class="module-option__text"
+                                            ><strong>Load test</strong
+                                            ><span>Measure response times and requests per second.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-ddos" /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >bolt</span
+                                        ><span class="module-option__text"
+                                            ><strong>Traffic test</strong
+                                            ><span>Test request bursts and slow connections.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-ratelimit" /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >block</span
+                                        ><span class="module-option__text"
+                                            ><strong>Rate limits</strong
+                                            ><span>Check limits on repeated requests.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    ><label class="module-option"
+                                        ><input type="checkbox" id="mod-xss" /><span
+                                            class="module-option__icon material-symbols-outlined"
+                                            aria-hidden="true"
+                                            >bug_report</span
+                                        ><span class="module-option__text"
+                                            ><strong>Input checks</strong
+                                            ><span>Check whether input appears unescaped in HTML.</span></span
+                                        ><span class="module-check material-symbols-outlined" aria-hidden="true"
+                                            >check</span
+                                        ></label
+                                    >
+                                </div>
+                                <p class="config-note active-test-note hidden" id="active-test-note">
+                                    <span class="material-symbols-outlined" aria-hidden="true">info</span>These tests
+                                    run after the security checks and may slow down the app.
+                                </p>
+                            </section>
+                            <section class="md-card setup-card scan-options">
+                                <div class="setup-section-title">
+                                    <span class="section-number">03</span>
+                                    <div>
+                                        <h2>Options</h2>
+                                        <p>Leave these unchanged to use the defaults.</p>
+                                    </div>
+                                </div>
+                                <label class="search-field" for="scan-paths">Additional page paths <span class="optional-label">Optional</span>
+                                    <textarea id="scan-paths" rows="3" placeholder="/account&#10;/settings" maxlength="40000" spellcheck="false" aria-describedby="paths-help"></textarea>
+                                </label>
+                                <p id="paths-help" class="config-note">One path per line, up to 20. Server and browser checks cover these routes and the target URL.</p>
+                                <details class="session-options"><summary>Use a login session</summary>
+                                    <p class="config-note">Paste headers from your own browser session. They are sent only to this app during the scan and are not stored in reports. You must supply them again for a new scan.</p>
+                                    <label class="search-field" for="session-cookie">Cookie header<input type="password" id="session-cookie" autocomplete="off" maxlength="8192" spellcheck="false" /></label>
+                                    <label class="search-field" for="session-authorization">Authorization header<input type="password" id="session-authorization" autocomplete="off" maxlength="8192" placeholder="Bearer …" spellcheck="false" /></label>
+                                    <label class="search-field" for="session-check-path">Page that requires this session <span class="optional-label">Optional</span><input id="session-check-path" placeholder="/account" maxlength="2048" spellcheck="false" /></label>
+                                    <label class="search-field" for="session-check-selector">Element that confirms you are signed in <span class="optional-label">Optional</span><input id="session-check-selector" placeholder="[data-user-menu]" maxlength="512" spellcheck="false" /></label>
+                                    <details class="login-options"><summary>Sign in through the app</summary>
+                                        <p class="config-note">Localghost submits only the configured sign-in form and allowed sign-in request paths. A visible success element is required. Credentials are used for this run only.</p>
+                                        <label class="show-passed"><input type="checkbox" id="use-browser-login" />Sign in before checking</label>
+                                        <div class="login-fields">
+                                            <label class="search-field" for="login-path">Sign-in page<input id="login-path" value="/login" maxlength="2048" /></label>
+                                            <label class="search-field" for="login-username">Username or email<input id="login-username" autocomplete="off" maxlength="4096" /></label>
+                                            <label class="search-field" for="login-password">Password<input id="login-password" type="password" autocomplete="off" maxlength="4096" /></label>
+                                            <label class="search-field" for="login-username-selector">Username field selector<input id="login-username-selector" value='input[name="username"]' maxlength="512" /></label>
+                                            <label class="search-field" for="login-password-selector">Password field selector<input id="login-password-selector" value='input[type="password"]' maxlength="512" /></label>
+                                            <label class="search-field" for="login-submit-selector">Submit button selector<input id="login-submit-selector" value='button[type="submit"]' maxlength="512" /></label>
+                                            <label class="search-field" for="login-success-selector">Signed-in element selector<input id="login-success-selector" placeholder="[data-user-menu]" maxlength="512" /></label>
+                                            <label class="search-field" for="login-post-paths">Allowed sign-in request paths<input id="login-post-paths" placeholder="/api/login, /api/session" maxlength="4096" /></label>
+                                        </div>
+                                    </details>
+                                    <details class="login-options"><summary>Browser state and session refresh</summary>
+                                        <p class="config-note">Paste a Playwright storage-state JSON object for this origin, or enter the token's localStorage key after sign-in. Other origins are rejected.</p>
+                                        <label class="search-field" for="session-browser-state">Browser state JSON<textarea id="session-browser-state" rows="3" maxlength="32768" spellcheck="false"></textarea></label>
+                                        <label class="search-field" for="session-token-key">Token localStorage key<input id="session-token-key" placeholder="access_token" maxlength="256" /></label>
+                                        <label class="search-field" for="session-refresh-path">Allowed refresh request path<input id="session-refresh-path" placeholder="/api/refresh" maxlength="2048" /></label>
+                                    </details>
+                                </details>
+                                <div id="port-config">
+                                    <label class="search-field" for="custom-ports"
+                                        >Ports to check <span class="optional-label">Optional</span
+                                        ><input
+                                            type="text"
+                                            id="custom-ports"
+                                            placeholder="Default development ports"
+                                            autocomplete="off"
+                                            spellcheck="false"
+                                            aria-describedby="ports-help"
+                                    /></label>
+                                    <p class="config-note" id="ports-help">
+                                        Use ports or ranges, e.g. 3000, 5173, 8000–8010. The target URL’s port is always
+                                        included.
+                                    </p>
+                                </div>
+                                <div class="bench-config hidden" id="bench-config">
+                                    <label class="search-field"
+                                        >Concurrent requests<input
+                                            type="number"
+                                            id="bench-concurrency"
+                                            disabled
+                                            required
+                                            value="50"
+                                            min="1"
+                                            max="500" /></label
+                                    ><label class="search-field"
+                                        >Duration in seconds<input
+                                            type="number"
+                                            id="bench-duration"
+                                            disabled
+                                            required
+                                            value="5"
+                                            min="1"
+                                            max="60"
+                                    /></label>
+                                </div>
+                                <p class="config-note" id="no-extra-options">
+                                    No additional options for the selected checks.
+                                </p>
+                            </section>
+                        </div>
+                        <aside class="scan-summary md-card">
+                            <h2>Scan summary</h2>
+                            <p id="scan-settings-note" class="config-note hidden">This older report has no saved scan settings. Check the options before starting.</p>
+                            <dl>
+                                <div>
+                                    <dt>Selected checks</dt>
+                                    <dd id="plan-check-count">7</dd>
+                                </div>
+                                <div>
+                                    <dt>Active tests</dt>
+                                    <dd id="plan-active-count">None</dd>
+                                </div>
+                                <div>
+                                    <dt>Report storage</dt>
+                                    <dd>Local</dd>
+                                </div>
+                            </dl>
+                            <p class="form-error hidden" id="form-error" role="alert"></p>
+                            <button type="submit" class="md-btn md-btn--filled" id="scan-btn">
+                                <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span
+                                ><span id="scan-btn-text">Start scan</span
+                                ><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                            </button>
+                        </aside>
+                    </form>
+                    <div class="mobile-scan-actions">
+                        <div>
+                            <strong id="mobile-plan-count">7 checks selected</strong><span>Report saved locally</span>
+                        </div>
+                        <button type="submit" form="scan-form" class="md-btn md-btn--filled" id="mobile-scan-btn">
+                            <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>Start scan
+                        </button>
+                    </div>
+                </section>
+                <section id="reports-view" class="workspace-view hidden" aria-labelledby="reports-heading">
+                    <div class="page-heading">
+                        <div>
+                            <h1 id="reports-heading" tabindex="-1">Reports</h1>
+                            <p>Search and open saved scan reports.</p>
+                        </div>
+                        <button type="button" class="md-btn md-btn--filled" data-view="scan">
+                            <span class="material-symbols-outlined" aria-hidden="true">add</span>New scan
+                        </button>
+                    </div>
+                    <section class="md-card reports-card">
+                        <div class="reports-toolbar">
+                            <label class="search-field history-search"
+                                ><span class="sr-only">Search saved targets</span
+                                ><span class="material-symbols-outlined" aria-hidden="true">search</span
+                                ><input
+                                    type="search"
+                                    id="history-search"
+                                    placeholder="Search reports by project URL…"
+                                    maxlength="200"
+                                    autocomplete="off"
+                            /></label>
+                            <div class="history-controls">
+                                <button type="button" class="md-btn md-btn--outlined" id="history-refresh">
+                                    <span class="material-symbols-outlined" aria-hidden="true">refresh</span>Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-list-heading">
+                            <span>SECURITY SCORE</span><span>PROJECT / TARGET</span><span>SCANNED AT</span><span></span>
+                        </div>
+                        <div id="history-list" class="history-list"></div>
+                        <div class="reports-footer">
+                            <p id="history-status" class="config-note" role="status">Loading reports…</p>
+                            <div class="history-controls">
+                                <button type="button" class="md-btn md-btn--outlined hidden" id="history-more">
+                                    Load more reports
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <div class="scan-progress hidden" id="scan-progress">
+                    <div class="page-heading">
+                        <div>
+                            <p class="eyebrow">Scan in progress</p>
+                            <h1>Scanning</h1>
+                            <p id="progress-target" class="report-url"></p>
+                        </div>
+                    </div>
+                    <div class="md-card">
+                        <div class="progress-header" id="progress-header">
+                            <span class="material-symbols-outlined spinning" aria-hidden="true">sync</span>
+                            <span id="progress-text" role="status">Scanning…</span>
+                            <span id="scan-elapsed" class="elapsed-time">0s</span>
+                            <button type="button" class="preset-btn" id="cancel-scan-btn">Cancel scan</button>
+                        </div>
+                        <div
+                            class="md-progress"
+                            id="scan-progress-meter"
+                            role="progressbar"
+                            aria-label="Completed checks"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-valuenow="0"
+                        >
+                            <div class="md-progress__bar" id="progress-bar"></div>
+                        </div>
+                        <div id="module-progress" class="module-progress" aria-label="Check progress"></div>
+                        <details class="scan-log" open>
+                            <summary>Scan activity</summary>
+                            <div class="tui-terminal" id="tui-terminal">
+                                <div class="tui-terminal__header">
+                                    <span class="tui-terminal__dot tui-terminal__dot--red"></span>
+                                    <span class="tui-terminal__dot tui-terminal__dot--yellow"></span>
+                                    <span class="tui-terminal__dot tui-terminal__dot--green"></span>
+                                    <span class="tui-terminal__title">localghost://scan</span>
+                                </div>
+                                <div class="tui-terminal__body" id="terminal-output">
+                                    <div class="tui-line">> Initializing scan engine...</div>
+                                </div>
+                            </div>
+                        </details>
+                        <div class="scan-recovery hidden" id="scan-recovery">
+                            <button type="button" class="md-btn md-btn--outlined" data-view="scan">
+                                Back to scan setup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-dashboard hidden" id="results-dashboard">
+                    <button type="button" class="back-link" data-view="home">
+                        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>All projects
+                    </button>
+                    <div class="report-heading">
+                        <div>
+                            <div class="report-kicker">
+                                <span class="eyebrow">Project report</span
+                                ><span class="status-pill" id="report-status">Completed</span>
+                            </div>
+                            <h1 id="report-name"></h1>
+                            <p id="report-target" class="report-url" tabindex="-1"></p>
+                            <p id="report-meta" class="config-note"></p>
+                            <p id="report-connection" class="config-note"></p>
+                        </div>
+                        <div class="report-toolbar">
+                            <button
+                                type="button"
+                                class="md-btn md-btn--text"
+                                id="compare-toggle-btn"
+                                aria-expanded="false"
+                                aria-controls="comparison-card"
+                            >
+                                <span class="material-symbols-outlined" aria-hidden="true">compare_arrows</span>Compare
+                            </button>
+                            <button type="button" class="md-btn md-btn--text" id="print-report-btn">
+                                <span class="material-symbols-outlined" aria-hidden="true">print</span>Print / PDF
+                            </button>
+                            <button type="button" class="md-btn md-btn--outlined" id="rescan-btn">
+                                <span class="material-symbols-outlined" aria-hidden="true">replay</span>Scan again
+                            </button>
+                        </div>
+                    </div>
+                    <div id="report-notices" class="report-notices" role="status"></div>
+                    <p class="config-note report-scope">Findings and counts apply to this scan. Rechecks preserve the original evidence. Review the scope below.</p>
+                    <div class="score-stats-row">
+                        <div class="md-card report-summary-card">
+                            <p>Confirmed problems</p><strong id="confirmed-count">0</strong>
+                            <dl class="report-summary-counts">
+                                <div><dt>Need review</dt><dd id="review-count">0</dd></div>
+                                <div><dt>Incomplete checks</dt><dd id="incomplete-count">0</dd></div>
+                                <div><dt>Completed checks</dt><dd id="completed-count">0</dd></div>
+                            </dl>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="report-overview">
+                            <div class="quick-stats" id="quick-stats">
+                                <div class="md-card stat-chip stat-chip--findings">
+                                    <span class="material-symbols-outlined" aria-hidden="true">bug_report</span>
+                                    <div class="stat-chip__content">
+                                        <span class="stat-chip__value" id="stat-findings">0</span>
+                                        <span class="stat-chip__label">Findings</span>
+                                    </div>
+                                </div>
+                                <div class="md-card stat-chip stat-chip--ports">
+                                    <span class="material-symbols-outlined" aria-hidden="true">lan</span>
+                                    <div class="stat-chip__content">
+                                        <span class="stat-chip__value" id="stat-ports">0</span>
+                                        <span class="stat-chip__label">Open ports</span>
+                                    </div>
+                                </div>
+                                <div class="md-card stat-chip stat-chip--critical">
+                                    <span class="material-symbols-outlined" aria-hidden="true">error</span>
+                                    <div class="stat-chip__content">
+                                        <span class="stat-chip__value" id="stat-critical">0</span>
+                                        <span class="stat-chip__label">Critical</span>
+                                    </div>
+                                </div>
+                                <div class="md-card stat-chip stat-chip--tech">
+                                    <span class="material-symbols-outlined" aria-hidden="true">code</span>
+                                    <div class="stat-chip__content">
+                                        <span class="stat-chip__value" id="stat-tech">0</span>
+                                        <span class="stat-chip__label">Technologies</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attention-card" id="attention-card">
+                                <span class="material-symbols-outlined" id="attention-icon" aria-hidden="true"
+                                    >shield</span
+                                >
+                                <div>
+                                    <p class="eyebrow" id="attention-eyebrow">Results</p>
+                                    <h2 id="attention-title"></h2>
+                                    <p id="attention-description"></p>
+                                </div>
+                                <button type="button" class="preset-btn" id="review-priority-btn">
+                                    Review issues<span class="material-symbols-outlined" aria-hidden="true"
+                                        >arrow_forward</span
+                                    >
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <section
+                        class="md-card comparison-card hidden"
+                        id="comparison-card"
+                        aria-labelledby="comparison-heading"
+                    >
+                        <div class="section-heading">
+                            <div>
+                                <h3 id="comparison-heading">Compare scans</h3>
+                            </div>
+                            <button
+                                type="button"
+                                class="icon-btn"
+                                id="close-comparison-btn"
+                                aria-label="Close comparison"
+                            >
+                                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                            </button>
+                        </div>
+                        <div class="comparison-controls">
+                            <label class="search-field"
+                                >Earlier report<select id="comparison-baseline" disabled>
+                                    <option>Loading previous scans…</option>
+                                </select></label
+                            ><button type="button" class="md-btn md-btn--outlined" id="compare-scans-btn" disabled>
+                                Compare
+                            </button>
+                        </div>
+                        <p id="comparison-status" class="config-note" role="status"></p>
+                        <div id="comparison-results"></div>
+                    </section>
+
+                    <details class="md-card report-scope-card" id="report-scope-details">
+                        <summary>What was checked</summary>
+                        <ul id="scope-details"></ul><div id="session-results"></div><div id="route-check-results" class="route-results-table"></div>
+                    </details>
+
+                    <!-- Results Tabs -->
+                    <div class="md-card results-card">
+                        <div
+                            class="results-tabs"
+                            id="results-tabs"
+                            role="tablist"
+                            aria-orientation="vertical"
+                            aria-label="Scan results"
+                        >
+                            <button class="results-tab active" data-tab="all-findings">
+                                <span class="material-symbols-outlined" aria-hidden="true">shield</span>
+                                <span>Findings</span>
+                            </button>
+                            <button class="results-tab" data-tab="source"><span class="material-symbols-outlined" aria-hidden="true">folder_open</span><span>Project details</span></button>
+                            <button class="results-tab" data-tab="browser"><span class="material-symbols-outlined" aria-hidden="true">web</span><span>Pages</span></button>
+                            <button class="results-tab" data-tab="ports">
+                                <span class="material-symbols-outlined" aria-hidden="true">lan</span>
+                                <span>Ports</span>
+                            </button>
+                            <button class="results-tab" data-tab="headers">
+                                <span class="material-symbols-outlined" aria-hidden="true">security</span>
+                                <span>Headers</span>
+                            </button>
+                            <button class="results-tab" data-tab="ssl">
+                                <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+                                <span>SSL/TLS</span>
+                            </button>
+                            <button class="results-tab" data-tab="cors">
+                                <span class="material-symbols-outlined" aria-hidden="true">public</span>
+                                <span>CORS</span>
+                            </button>
+                            <button class="results-tab" data-tab="cookies">
+                                <span class="material-symbols-outlined" aria-hidden="true">cookie</span>
+                                <span>Cookies</span>
+                            </button>
+                            <button class="results-tab" data-tab="tech">
+                                <span class="material-symbols-outlined" aria-hidden="true">code</span>
+                                <span>Software</span>
+                            </button>
+                            <button class="results-tab" data-tab="dns">
+                                <span class="material-symbols-outlined" aria-hidden="true">dns</span>
+                                <span>DNS</span>
+                            </button>
+                            <button class="results-tab" data-tab="benchmark">
+                                <span class="material-symbols-outlined" aria-hidden="true">speed</span>
+                                <span>Load test</span>
+                            </button>
+                            <button class="results-tab" data-tab="ddos">
+                                <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
+                                <span>Traffic test</span>
+                            </button>
+                            <button class="results-tab" data-tab="ratelimit">
+                                <span class="material-symbols-outlined" aria-hidden="true">block</span>
+                                <span>Rate Limit</span>
+                            </button>
+                            <button class="results-tab" data-tab="xss">
+                                <span class="material-symbols-outlined" aria-hidden="true">bug_report</span>
+                                <span>Input checks</span>
+                            </button>
+                        </div>
+
+                        <div class="results-panels">
+                            <div class="panel-heading">
+                                <div>
+                                    <h2 id="result-section-title">Findings</h2>
+                                </div>
+                                <span class="config-note" id="result-section-note">Issues and suggested fixes</span>
+                            </div>
+                            <div class="results-panel active" id="panel-all-findings">
+                                <div class="finding-state-filters" role="group" aria-label="Finding status">
+                                    <button type="button" class="preset-btn" data-verification="all" aria-pressed="true">All</button>
+                                    <button type="button" class="preset-btn" data-verification="confirmed" aria-pressed="false">Confirmed</button>
+                                    <button type="button" class="preset-btn" data-verification="review" aria-pressed="false">Need review</button>
+                                    <button type="button" class="preset-btn" data-verification="not_checked" aria-pressed="false">Not checked</button>
+                                </div>
+                                <div class="findings-toolbar">
+                                    <label class="search-field"
+                                        >Search findings<input
+                                            id="findings-search"
+                                            type="search"
+                                            placeholder="Search title, details, or recommendation"
+                                    /></label>
+                                    <label class="search-field"
+                                        >Check<select id="findings-module">
+                                            <option value="all">All checks</option>
+                                        </select></label
+                                    >
+                                    <label class="search-field"
+                                        >Severity<select id="findings-severity">
+                                            <option value="all">All severities</option>
+                                            <option value="critical">Critical</option>
+                                            <option value="high">High</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="low">Low</option>
+                                            <option value="info">Info</option>
+                                            <option value="pass">Passed</option>
+                                        </select></label
+                                    >
+                                </div>
+                                <div
+                                    id="severity-filters"
+                                    class="severity-filters"
+                                    role="group"
+                                    aria-label="Filter findings by severity"
+                                ></div>
+                                <div class="findings-options">
+                                    <p id="findings-count" class="config-note" role="status"></p>
+                                    <label class="show-passed"
+                                        ><input type="checkbox" id="show-passed" />Show passed checks</label
+                                    >
+                                </div>
+                                <div id="findings-list"></div>
+                            </div>
+                            <div class="results-panel" id="panel-source"></div>
+                            <div class="results-panel" id="panel-browser"></div>
+                            <div class="results-panel" id="panel-ports"></div>
+                            <div class="results-panel" id="panel-headers"></div>
+                            <div class="results-panel" id="panel-ssl"></div>
+                            <div class="results-panel" id="panel-cors"></div>
+                            <div class="results-panel" id="panel-cookies"></div>
+                            <div class="results-panel" id="panel-tech"></div>
+                            <div class="results-panel" id="panel-dns"></div>
+                            <div class="results-panel" id="panel-benchmark"></div>
+                            <div class="results-panel" id="panel-ddos"></div>
+                            <div class="results-panel" id="panel-ratelimit"></div>
+                            <div class="results-panel" id="panel-xss"></div>
+                        </div>
+                    </div>
+
+                    <!-- Actions Bar -->
+                    <div class="actions-bar">
+                        <button class="md-btn md-btn--outlined" id="export-json-btn">
+                            <span class="material-symbols-outlined" aria-hidden="true">download</span>
+                            Export JSON
+                        </button>
+                        <button class="md-btn md-btn--text" id="clear-results-btn">
+                            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                            Back to projects
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <article id="print-report" aria-label="Printable scan report"></article>
+        <dialog id="delete-history-dialog" class="confirm-dialog" aria-labelledby="delete-dialog-title">
+            <h2 id="delete-dialog-title">Delete this scan?</h2>
+            <p>This removes the saved report from your local history.</p>
+            <form method="dialog" class="dialog-actions">
+                <button class="md-btn md-btn--text" value="cancel">Keep scan</button
+                ><button class="md-btn md-btn--outlined" value="delete">Delete scan</button>
+            </form>
+        </dialog>
+        <dialog id="recheck-session-dialog" class="confirm-dialog" aria-labelledby="recheck-session-title">
+            <h2 id="recheck-session-title">Supply the session again</h2>
+            <p>The original check used a login session. Credentials were not saved.</p>
+            <form method="dialog">
+                <div id="recheck-login-fields" class="hidden"><p id="recheck-login-note" class="config-note"></p><label class="search-field" for="recheck-username">Username<input id="recheck-username" autocomplete="off" maxlength="4096" /></label><label class="search-field" for="recheck-password">Password<input id="recheck-password" type="password" autocomplete="off" maxlength="4096" /></label><p class="config-note">Enter sign-in credentials, or supply a current Cookie or Authorization header below.</p></div>
+                <p id="recheck-assertion-note" class="config-note"></p>
+                <label class="search-field" for="recheck-cookie">Cookie header<input id="recheck-cookie" type="password" autocomplete="off" maxlength="8192" /></label>
+                <label class="search-field" for="recheck-authorization">Authorization header<input id="recheck-authorization" type="password" autocomplete="off" maxlength="8192" /></label><label class="search-field" for="recheck-session-json">Complete session settings <span class="optional-label">Optional</span><textarea id="recheck-session-json" rows="4" maxlength="48000" placeholder='{"check_path":"/account","login":{...}}' spellcheck="false"></textarea></label><p class="config-note">For other sign-in settings or browser storage state, supply a session JSON object. Credentials are not saved.</p>
+                <div class="dialog-actions"><button class="md-btn md-btn--text" value="cancel">Cancel</button><button class="md-btn md-btn--filled" value="check">Check again</button></div>
+            </form>
+        </dialog>
+        <script type="module" src="/static/js/app.js"></script>
+    </body>
 </html>

@@ -1,10 +1,16 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.7
-> **Last Updated:** 2026-02-28
+> **Version:** 0.0.8
+> **Last Updated:** 2026-03-08
 
 ---
+
+## [0.0.8] - 2026-03-08
+
+- Connect project discovery, source selection, routes, login sessions, and scan progress in the dashboard.
+- Add searchable history, finding filters, report comparisons, navigation, and fix rechecks.
+- Cover frontend parsing, filtering, exports, and evidence rendering with Node tests.
 
 ## [0.0.7] - 2026-02-28
 
