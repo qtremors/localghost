@@ -1,10 +1,16 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.8
-> **Last Updated:** 2026-03-08
+> **Version:** 0.0.9
+> **Last Updated:** 2026-03-26
 
 ---
+
+## [0.0.9] - 2026-03-26
+
+- Complete report-library, progress, narrow-screen, and reduced-motion styles.
+- Add regression coverage for route audits, source context, sessions, evidence, CLI exits, and comparisons.
+- Exercise dashboard navigation, themes, history, and keyboard controls with Chromium smoke checks.
 
 ## [0.0.8] - 2026-03-08
 
