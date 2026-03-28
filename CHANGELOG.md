@@ -1,10 +1,16 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.0.9
-> **Last Updated:** 2026-03-26
+> **Version:** 0.1.0
+> **Last Updated:** 2026-03-28
 
 ---
+
+## [0.1.0] - 2026-03-28
+
+- Add disposable Docker acceptance and authenticated training-app checks.
+- Capture screenshots and reports using isolated history and clearly identified fixtures.
+- Document setup, architecture, configuration, CLI/API usage, sessions, and verification.
 
 ## [0.0.9] - 2026-03-26
 

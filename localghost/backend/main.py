@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Localghost",
     description="Check running web apps, inspect findings, and verify fixes.",
-    version="0.0.9",
+    version="0.1.0",
     lifespan=lifespan,
 )
 app.add_middleware(LocalAccessMiddleware)
@@ -75,7 +75,7 @@ async def serve_index():
 @app.get("/health")
 async def health_check():
     """Simple health check endpoint."""
-    return {"status": "alive", "version": "0.0.9"}
+    return {"status": "alive", "version": "0.1.0"}
 
 
 if __name__ == "__main__":
