@@ -2,7 +2,7 @@
 
 Setup, architecture, interfaces, and verification for working on Localghost. For an overview and the dashboard workflow, start with the [README](README.md).
 
-**Version:** 0.1.1 | **Last Updated:** 2026-10-23
+**Version:** 0.1.2 | **Last Updated:** 2026-10-23
 
 ## Contents
 

@@ -1,10 +1,14 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.1.1
+> **Version:** 0.1.2
 > **Last Updated:** 2026-10-23
 
 ---
+
+## [0.1.2] - 2026-10-23
+
+- Add shared-theme styles for capture forms, saved-page tables, content tabs, and dialogs.
 
 ## [0.1.1] - 2026-10-23
 

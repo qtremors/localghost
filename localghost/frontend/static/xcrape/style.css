@@ -1,0 +1,1598 @@
+#xcrape-view *,
+#xcrape-view *::before,
+#xcrape-view *::after {
+        box-sizing: border-box;
+    }
+
+#xcrape-view,
+#xcrape-view h1,
+#xcrape-view h2,
+#xcrape-view h3,
+#xcrape-view p {
+        margin: 0;
+    }
+
+#xcrape-view button,
+#xcrape-view input,
+#xcrape-view select,
+#xcrape-view textarea {
+        font: inherit;
+    }
+
+#xcrape-view button,
+#xcrape-view summary,
+#xcrape-view a,
+#xcrape-view input,
+#xcrape-view select {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+#xcrape-view button {
+        cursor: pointer;
+    }
+
+#xcrape-view button:disabled {
+        cursor: default;
+    }
+
+#xcrape-view img {
+        display: block;
+        max-width: 100%;
+    }
+
+#xcrape-view [hidden] {
+        display: none !important;
+    }
+
+
+
+#xcrape-view {
+        color-scheme: inherit;
+        --bg: var(--md-surface);
+        --surface: var(--md-surface-container);
+        --ink: var(--md-on-surface);
+        --muted: var(--md-on-surface-variant);
+        --line: var(--md-outline-variant);
+        --accent: var(--md-primary);
+        --accent-hover: var(--md-on-primary-container);
+        --soft: var(--md-primary-container);
+        --red: var(--md-error);
+        --red-soft: var(--md-error-container);
+        min-width: 0;
+    }
+
+#xcrape-view {
+        scroll-behavior: smooth;
+    }
+
+#xcrape-view {
+        background: var(--bg);
+        color: var(--ink);
+        font: 14px/1.6 var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+
+#xcrape-view a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+#xcrape-view a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+#xcrape-view button,
+#xcrape-view summary {
+        touch-action: manipulation;
+    }
+
+#xcrape-view :focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+    }
+
+#xcrape-view ::selection {
+        background: var(--soft);
+        color: var(--md-on-primary-container);
+    }
+
+#xcrape-view h1 {
+        font-size: clamp(28px, 2.5vw, 34px);
+        font-weight: 650;
+        letter-spacing: -0.045em;
+        line-height: 1.2;
+    }
+
+#xcrape-view h2 {
+        font-size: 18px;
+        font-weight: 620;
+        letter-spacing: -0.4px;
+        line-height: 1.4;
+    }
+
+#xcrape-view h3 {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.25px;
+    }
+
+#xcrape-view .icon {
+        width: 19px;
+        height: 19px;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+
+#xcrape-view [data-icon] {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+    }
+
+#xcrape-view .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+#xcrape-view kbd {
+        font-family: inherit;
+        font-size: 11px;
+        line-height: 1.5;
+        border: 1px solid var(--line);
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--surface);
+        color: var(--muted);
+    }
+
+
+
+#xcrape-view .nav-count {
+        margin-left: auto;
+        font-size: 11px;
+        background: var(--soft);
+        padding: 0 6px;
+        border-radius: 4px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+#xcrape-view .device-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 550;
+    }
+
+#xcrape-view .connection-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--md-success);
+        flex-shrink: 0;
+    }
+
+#xcrape-view .connection-dot.offline {
+        background: var(--md-error);
+    }
+
+#xcrape-view .version {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        margin-top: 24px;
+    }
+
+#xcrape-view .page-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: var(--section-space);
+    }
+
+#xcrape-view .eyebrow {
+        font-size: 11px;
+        font-weight: 550;
+        color: var(--muted);
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+#xcrape-view .intro {
+        color: var(--muted);
+        margin-top: 6px;
+        font-size: 13px;
+    }
+
+#xcrape-view .local-label {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        font-size: 11px;
+        color: var(--muted);
+        white-space: nowrap;
+        align-self: flex-start;
+        padding-top: 8px;
+    }
+
+#xcrape-view .local-label .icon {
+        width: 15px;
+        height: 15px;
+    }
+
+#xcrape-view .capture-card {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        padding: 18px 0 0;
+        box-shadow: none;
+        border-block: 1px solid var(--line);
+    }
+
+#xcrape-view .capture-heading {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+#xcrape-view .capture-heading p {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 3px;
+    }
+
+#xcrape-view .section-icon {
+        background: var(--soft);
+        color: var(--accent);
+        padding: 8px;
+        border-radius: var(--radius-sm);
+    }
+
+#xcrape-view .section-icon .icon {
+        width: 21px;
+        height: 21px;
+    }
+
+#xcrape-view .capture-note {
+        margin: 12px 0 0;
+        border-top: 1px solid var(--line);
+        padding: 10px 0;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 11px;
+        background: transparent;
+        border-radius: 0;
+    }
+
+#xcrape-view .capture-note .icon {
+        width: 14px;
+        height: 14px;
+    }
+
+#xcrape-view .history {
+        margin-top: var(--section-space);
+        scroll-margin-top: 24px;
+    }
+
+#xcrape-view .history-heading,
+#xcrape-view .heading-inline {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+#xcrape-view .history-heading {
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+#xcrape-view .count-label {
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--md-surface-container-high);
+        border-radius: 5px;
+        padding: 1px 7px;
+    }
+
+#xcrape-view .working-label {
+        font-size: 11px;
+        color: var(--accent);
+    }
+
+#xcrape-view .history-toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+    }
+
+#xcrape-view .history-surface {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        overflow: hidden;
+        border-block: 1px solid var(--line);
+    }
+
+#xcrape-view .page-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 10px;
+        margin-top: 12px;
+        padding-bottom: 0;
+    }
+
+#xcrape-view .footer-divider {
+        margin: 0 10px;
+    }
+
+
+
+#xcrape-view .button {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 18px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        line-height: 1.5;
+        font-weight: 550;
+        white-space: nowrap;
+        transition:
+            background 0.15s,
+            border-color 0.15s;
+        text-decoration: none;
+    }
+
+#xcrape-view .button:hover {
+        text-decoration: none;
+    }
+
+#xcrape-view .button .icon {
+        width: 16px;
+        height: 16px;
+    }
+
+#xcrape-view .primary {
+        background: var(--accent);
+        color: var(--md-on-primary);
+        box-shadow: none;
+    }
+
+#xcrape-view .primary:hover {
+        background: var(--soft);
+        color: var(--md-on-primary-container);
+    }
+
+#xcrape-view .secondary {
+        background: var(--surface);
+        color: var(--ink);
+        border-color: var(--line);
+    }
+
+#xcrape-view .secondary:hover {
+        border-color: var(--md-outline);
+        background: var(--md-surface-container-high);
+    }
+
+#xcrape-view .subtle {
+        background: transparent;
+        color: var(--muted);
+    }
+
+#xcrape-view .subtle:hover {
+        background: var(--md-surface-container-high);
+        color: var(--ink);
+    }
+
+#xcrape-view .small {
+        min-height: 36px;
+        padding: 7px 11px;
+        font-size: 11px;
+    }
+
+#xcrape-view .danger {
+        background: var(--red-soft);
+        color: var(--red);
+        border-color: var(--red);
+    }
+
+#xcrape-view .danger:hover {
+        background: var(--red);
+        color: var(--bg);
+    }
+
+#xcrape-view .button:disabled {
+        opacity: 0.45;
+    }
+
+#xcrape-view .icon-button {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+#xcrape-view .icon-button:hover {
+        background: var(--soft);
+        color: var(--accent);
+    }
+
+#xcrape-view .icon-button.delete:hover {
+        color: var(--red);
+        background: var(--red-soft);
+    }
+
+#xcrape-view .icon-button .icon {
+        width: 16px;
+        height: 16px;
+    }
+
+#xcrape-view .field-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+#xcrape-view input,
+#xcrape-view select {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--ink);
+        background: var(--surface);
+        font-size: 13px;
+        padding: 11px 13px;
+        width: 100%;
+        min-width: 0;
+    }
+
+#xcrape-view input::placeholder {
+        color: var(--muted);
+    }
+
+#xcrape-view input:focus,
+#xcrape-view select:focus {
+        border-color: var(--accent);
+        outline: 3px solid var(--soft);
+        outline-offset: 0;
+    }
+
+#xcrape-view .url-row {
+        display: flex;
+        gap: 10px;
+    }
+
+#xcrape-view .url-field {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+    }
+
+#xcrape-view .url-field > [data-icon] {
+        position: absolute;
+        left: 14px;
+        top: 15px;
+        color: var(--muted);
+        pointer-events: none;
+    }
+
+#xcrape-view .url-field .icon {
+        width: 17px;
+        height: 17px;
+    }
+
+#xcrape-view .url-field input {
+        padding-left: 41px;
+        height: 48px;
+        background: var(--md-surface-container-low);
+    }
+
+#xcrape-view .url-row .button {
+        min-width: 154px;
+    }
+
+#xcrape-view .advanced {
+        margin-top: 16px;
+    }
+
+#xcrape-view .advanced > summary {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--muted);
+        font-size: 11px;
+        cursor: pointer;
+        list-style: none;
+        width: fit-content;
+        min-height: 30px;
+    }
+
+#xcrape-view summary::-webkit-details-marker {
+        display: none;
+    }
+
+#xcrape-view .advanced summary .icon {
+        width: 13px;
+        height: 13px;
+    }
+
+#xcrape-view .advanced[open] summary .icon {
+        transform: rotate(180deg);
+    }
+
+#xcrape-view .optional {
+        font-size: 10px;
+        color: var(--muted);
+    }
+
+#xcrape-view .selector-field {
+        padding-top: 12px;
+        max-width: 550px;
+    }
+
+#xcrape-view .selector-field input {
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 12px;
+    }
+
+#xcrape-view .field-help {
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+#xcrape-view .form-error {
+        font-size: 12px;
+        color: var(--red);
+        margin-top: 12px;
+    }
+
+#xcrape-view .search-field {
+        width: 330px;
+        max-width: 100%;
+        position: relative;
+    }
+
+#xcrape-view .search-field > [data-icon] {
+        position: absolute;
+        left: 12px;
+        top: 11px;
+        color: var(--muted);
+    }
+
+#xcrape-view .search-field .icon {
+        width: 16px;
+        height: 16px;
+    }
+
+#xcrape-view .search-field input {
+        min-height: 38px;
+        height: 38px;
+        padding: 8px 38px 8px 35px;
+        font-size: 12px;
+    }
+
+#xcrape-view .search-field kbd {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        pointer-events: none;
+    }
+
+#xcrape-view .status-filter select {
+        min-height: 38px;
+        height: 38px;
+        padding: 7px 28px 7px 12px;
+        font-size: 11px;
+        width: 155px;
+    }
+
+#xcrape-view .empty-state {
+        padding: 24px 16px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+    }
+
+#xcrape-view .empty-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        background: var(--soft);
+        color: var(--accent);
+        margin-bottom: 12px;
+    }
+
+#xcrape-view .empty-icon .icon {
+        width: 27px;
+        height: 27px;
+        stroke-width: 1.3;
+    }
+
+#xcrape-view .empty-state h3 {
+        font-size: 15px;
+    }
+
+#xcrape-view .empty-state p {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 7px 0 0;
+        max-width: 350px;
+    }
+
+#xcrape-view .empty-state .button {
+        margin-top: 14px;
+    }
+
+#xcrape-view .table-wrap {
+        overflow-x: auto;
+    }
+
+#xcrape-view table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+#xcrape-view .capture-table th {
+        background: var(--md-surface-container-low);
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 500;
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--line);
+    }
+
+#xcrape-view .capture-table td {
+        padding: 15px 18px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+    }
+
+#xcrape-view .capture-table tr:last-child td {
+        border-bottom: none;
+    }
+
+#xcrape-view .capture-table tbody tr:hover {
+        background: var(--md-surface-container-high);
+    }
+
+#xcrape-view .capture-table td:first-child {
+        width: 63%;
+    }
+
+#xcrape-view .capture-table td:last-child {
+        padding-left: 0;
+        padding-right: 12px;
+    }
+
+#xcrape-view .page-cell {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        border: none;
+        background: transparent;
+        padding: 0;
+        text-align: left;
+        color: var(--ink);
+        width: 100%;
+        min-width: 0;
+    }
+
+#xcrape-view .page-cell:hover .page-title {
+        color: var(--accent);
+    }
+
+#xcrape-view .page-symbol {
+        display: flex;
+        flex-shrink: 0;
+        background: var(--md-surface-container-low);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+#xcrape-view .page-symbol .icon {
+        width: 18px;
+        height: 18px;
+    }
+
+#xcrape-view .page-cell-text {
+        min-width: 0;
+    }
+
+#xcrape-view .page-title {
+        display: block;
+        font-size: 12px;
+        font-weight: 550;
+        max-width: min(35vw, 430px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+#xcrape-view .page-address {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+        max-width: min(35vw, 430px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 3px;
+    }
+
+#xcrape-view .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border-radius: 5px;
+        padding: 3px 7px;
+        font-size: 10px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+#xcrape-view .status::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+#xcrape-view .status.completed {
+        color: var(--md-success);
+        background: color-mix(in srgb, var(--md-success) 12%, var(--surface));
+    }
+
+#xcrape-view .status.running {
+        color: var(--md-warning);
+        background: color-mix(in srgb, var(--md-warning) 12%, var(--surface));
+    }
+
+#xcrape-view .status.pending {
+        color: var(--md-info);
+        background: color-mix(in srgb, var(--md-info) 12%, var(--surface));
+    }
+
+#xcrape-view .status.failed {
+        color: var(--md-error);
+        background: var(--red-soft);
+    }
+
+#xcrape-view .date-cell {
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+#xcrape-view .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 11px;
+        gap: 12px;
+    }
+
+#xcrape-view .pagination > div {
+        display: flex;
+        gap: 6px;
+    }
+
+#xcrape-view .notice {
+        padding: 12px 15px;
+        font-size: 12px;
+        border-radius: 7px;
+        margin-bottom: 14px;
+        background: var(--soft);
+        color: var(--accent);
+    }
+
+#xcrape-view .error-notice {
+        background: var(--red-soft);
+        color: var(--red);
+    }
+
+#xcrape-view dialog {
+        margin: auto;
+        background: var(--surface);
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        padding: 0;
+        box-shadow: 0 24px 100px #00000040;
+    }
+
+#xcrape-view dialog::backdrop {
+        background: #000000b3;
+        backdrop-filter: blur(3px);
+    }
+
+#xcrape-view .detail-dialog {
+        width: min(1440px, calc(100vw - 48px));
+        height: min(960px, calc(100dvh - 48px));
+        max-width: none;
+        max-height: none;
+        overflow: hidden;
+    }
+
+#xcrape-view .detail-dialog[open] {
+        display: flex;
+        flex-direction: column;
+    }
+
+#xcrape-view .detail-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 25px;
+        padding: 20px 24px 16px;
+        flex-shrink: 0;
+    }
+
+#xcrape-view .detail-heading {
+        min-width: 0;
+    }
+
+#xcrape-view .detail-heading h2 {
+        font-size: 22px;
+        line-height: 1.3;
+        letter-spacing: -0.65px;
+        overflow-wrap: anywhere;
+        margin-bottom: 6px;
+    }
+
+#xcrape-view .detail-heading .eyebrow {
+        display: block;
+        font-size: 10px;
+        margin-bottom: 8px;
+    }
+
+#xcrape-view .detail-url {
+        display: block;
+        font-size: 11px;
+        color: var(--muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 530px;
+    }
+
+#xcrape-view .detail-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+#xcrape-view .close-button {
+        margin-left: 4px;
+    }
+
+#xcrape-view .export-menu {
+        position: relative;
+    }
+
+#xcrape-view .export-menu > summary {
+        list-style: none;
+        cursor: pointer;
+    }
+
+#xcrape-view .menu-items {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 7px);
+        min-width: 170px;
+        padding: 5px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: 0 8px 25px #00000030;
+        z-index: 2;
+    }
+
+#xcrape-view .menu-items button {
+        display: block;
+        text-align: left;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        background: transparent;
+        font-size: 12px;
+        color: var(--ink);
+        padding: 10px;
+    }
+
+#xcrape-view .menu-items button:hover {
+        background: var(--soft);
+    }
+
+#xcrape-view .export-menu.disabled {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+#xcrape-view .detail-status {
+        margin: 0 28px 16px;
+        padding: 11px 14px;
+        background: var(--red-soft);
+        border-radius: 6px;
+        color: var(--red);
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+#xcrape-view .tab-list {
+        display: flex;
+        padding: 0 28px;
+        border-bottom: 1px solid var(--line);
+        gap: 24px;
+        overflow-x: auto;
+        flex-shrink: 0;
+        scrollbar-width: thin;
+    }
+
+#xcrape-view .tab-list button {
+        padding: 11px 0 13px;
+        min-height: 43px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        background: none;
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+#xcrape-view .tab-list button[aria-selected='true'] {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+        font-weight: 600;
+    }
+
+#xcrape-view .detail-content {
+        padding: 20px 24px;
+        overflow-y: auto;
+        min-height: 0;
+        flex: 1;
+        background: var(--bg);
+    }
+
+#xcrape-view .detail-content:focus {
+        outline-offset: -3px;
+    }
+
+#xcrape-view .overview-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(240px, 1fr);
+        gap: 26px;
+        align-items: start;
+    }
+
+#xcrape-view .screenshot-wrap {
+        background: var(--md-surface-container-low);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+#xcrape-view .screenshot-wrap img {
+        width: 100%;
+    }
+
+#xcrape-view .screenshot-caption {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 12px;
+        font-size: 10px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+        background: var(--surface);
+    }
+
+#xcrape-view .summary-card {
+        min-width: 0;
+    }
+
+#xcrape-view .summary-card h3 {
+        overflow-wrap: anywhere;
+    }
+
+#xcrape-view .summary-card > p {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.8;
+        margin-top: 10px;
+        overflow-wrap: anywhere;
+    }
+
+#xcrape-view .summary-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        border-block: 1px solid var(--line);
+        margin-top: 22px;
+        padding: 17px 0;
+    }
+
+#xcrape-view .summary-stat strong {
+        display: block;
+        font-size: 22px;
+        font-weight: 550;
+        letter-spacing: -0.7px;
+    }
+
+#xcrape-view .summary-stat span {
+        color: var(--muted);
+        font-size: 10px;
+    }
+
+#xcrape-view .fact-list {
+        margin: 17px 0 0;
+        display: grid;
+        gap: 11px;
+    }
+
+#xcrape-view .fact-list > div {
+        display: grid;
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 12px;
+        font-size: 11px;
+    }
+
+#xcrape-view .fact-list dt {
+        color: var(--muted);
+    }
+
+#xcrape-view .fact-list dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+#xcrape-view .content-section + .content-section {
+        margin-top: 29px;
+    }
+
+#xcrape-view .content-section {
+        min-width: 0;
+    }
+
+#xcrape-view .section-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+    }
+
+#xcrape-view .section-top h3 {
+        font-size: 14px;
+    }
+
+#xcrape-view .section-top .button {
+        font-size: 10px;
+    }
+
+#xcrape-view .content-section p,
+#xcrape-view .content-section li {
+        overflow-wrap: anywhere;
+    }
+
+#xcrape-view .prose {
+        max-width: 760px;
+    }
+
+#xcrape-view .prose p {
+        font-size: 14px;
+        line-height: 1.9;
+        color: var(--muted);
+        margin-bottom: 16px;
+    }
+
+#xcrape-view .prose ul,
+#xcrape-view .prose ol {
+        padding-left: 22px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+#xcrape-view .heading-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+#xcrape-view .heading-list li {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 13px;
+    }
+
+#xcrape-view .heading-level {
+        font-size: 10px;
+        color: var(--muted);
+        font-family: ui-monospace, monospace;
+        flex-shrink: 0;
+    }
+
+#xcrape-view .empty-content {
+        padding: 35px 16px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 13px;
+    }
+
+#xcrape-view .link-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+#xcrape-view .link-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 12px;
+    }
+
+#xcrape-view .link-list li > div {
+        min-width: 0;
+        flex: 1;
+    }
+
+#xcrape-view .link-list a {
+        display: block;
+        overflow-wrap: anywhere;
+    }
+
+#xcrape-view .link-list small {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+        overflow-wrap: anywhere;
+        margin-top: 4px;
+    }
+
+#xcrape-view .pill {
+        display: inline-flex;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 3px 7px;
+        color: var(--muted);
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+#xcrape-view .pill.soft {
+        background: var(--soft);
+        border-color: var(--soft);
+        color: var(--accent);
+    }
+
+#xcrape-view .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+#xcrape-view .filter-input {
+        max-width: 420px;
+        margin-bottom: 12px;
+        font-size: 12px;
+    }
+
+#xcrape-view .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 16px;
+    }
+
+#xcrape-view .image-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+        min-width: 0;
+    }
+
+#xcrape-view .image-thumb {
+        aspect-ratio: 3 / 2;
+        background: var(--md-surface-container-low);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+#xcrape-view .image-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+#xcrape-view .image-thumb span {
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+#xcrape-view .image-info {
+        padding: 12px;
+    }
+
+#xcrape-view .image-info p {
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+#xcrape-view .image-info small {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 4px;
+    }
+
+#xcrape-view .image-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        gap: 8px;
+    }
+
+#xcrape-view .image-actions span {
+        font-size: 10px;
+        color: var(--muted);
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+#xcrape-view pre {
+        margin: 0;
+        padding: 16px;
+        background: var(--md-surface-container-low);
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--muted);
+        font:
+            11px/1.8 ui-monospace,
+            SFMono-Regular,
+            Consolas,
+            monospace;
+        overflow: auto;
+        max-height: 470px;
+        tab-size: 2;
+    }
+
+#xcrape-view .data-table {
+        font-size: 11px;
+    }
+
+#xcrape-view .data-table th,
+#xcrape-view .data-table td {
+        border-bottom: 1px solid var(--line);
+        padding: 11px 13px;
+        vertical-align: top;
+        overflow-wrap: anywhere;
+        max-width: 400px;
+    }
+
+#xcrape-view .data-table th {
+        font-weight: 550;
+        color: var(--muted);
+    }
+
+#xcrape-view .metadata-table {
+        table-layout: fixed;
+    }
+
+#xcrape-view .metadata-table th {
+        width: 160px;
+    }
+
+#xcrape-view .load-more {
+        margin-top: 18px;
+    }
+
+#xcrape-view .progress-view {
+        padding: 66px 20px;
+        text-align: center;
+    }
+
+#xcrape-view .progress-view h3 {
+        margin-top: 22px;
+    }
+
+#xcrape-view .progress-view p {
+        color: var(--muted);
+        margin-top: 8px;
+        font-size: 12px;
+    }
+
+#xcrape-view .spinner {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        border: 2px solid var(--line);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: xc-rotate 1s linear infinite;
+    }
+
+@keyframes xc-rotate {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+#xcrape-view .confirm-dialog {
+        padding: 26px;
+        width: min(390px, calc(100vw - 32px));
+    }
+
+#xcrape-view .delete-icon {
+        display: inline-flex;
+        background: var(--red-soft);
+        color: var(--red);
+        padding: 10px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 16px;
+    }
+
+#xcrape-view .confirm-dialog h2 {
+        margin-bottom: 9px;
+    }
+
+#xcrape-view .confirm-dialog p {
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+#xcrape-view .confirm-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 25px;
+    }
+
+#xcrape-view .toast-region {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        max-width: min(380px, calc(100vw - 32px));
+        z-index: 5;
+        pointer-events: none;
+    }
+
+#xcrape-view .toast {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 17px;
+        color: var(--ink);
+        background: var(--md-surface-container-high);
+        border-radius: 9px;
+        box-shadow: 0 6px 25px #00000030;
+        font-size: 12px;
+        pointer-events: auto;
+        border: 1px solid var(--line);
+    }
+
+#xcrape-view .toast.error {
+        background: var(--red-soft);
+        color: var(--red);
+    }
+
+#xcrape-view dialog .toast-region {
+        position: fixed;
+    }
+
+
+
+@media (min-width: 1540px) {
+
+
+}
+
+@media (max-width: 1050px) {
+#xcrape-view .local-label {
+            display: none;
+        }
+
+#xcrape-view .detail-top {
+            gap: 16px;
+        }
+
+#xcrape-view .detail-heading h2 {
+            font-size: 20px;
+        }
+
+#xcrape-view .overview-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+            gap: 20px;
+        }
+
+
+
+}
+
+@media (max-width: 760px) {
+#xcrape-view .version {
+            display: none;
+        }
+
+#xcrape-view .device-note {
+            font-size: 10px;
+        }
+
+#xcrape-view .page-heading {
+            margin-bottom: 26px;
+        }
+
+#xcrape-view h1 {
+            font-size: 34px;
+        }
+
+#xcrape-view .page-heading .eyebrow {
+            font-size: 10px;
+        }
+
+#xcrape-view .capture-card {
+            padding: 16px 0 0;
+        }
+
+#xcrape-view .capture-note {
+            margin-inline: 0;
+            padding-inline: 0;
+        }
+
+#xcrape-view .capture-table td:first-child {
+            width: auto;
+        }
+
+#xcrape-view .page-title,
+#xcrape-view .page-address {
+            max-width: 38vw;
+        }
+
+#xcrape-view .detail-dialog {
+            width: calc(100vw - 24px);
+            height: calc(100dvh - 32px);
+        }
+
+#xcrape-view .detail-top {
+            flex-direction: column;
+            padding: 22px 22px 16px;
+            gap: 16px;
+        }
+
+#xcrape-view .detail-heading {
+            width: 100%;
+            padding-right: 25px;
+        }
+
+#xcrape-view .detail-actions {
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+#xcrape-view .close-button {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+
+#xcrape-view .detail-url {
+            max-width: 100%;
+        }
+
+#xcrape-view .detail-content {
+            padding: 22px;
+        }
+
+#xcrape-view .tab-list {
+            padding-inline: 22px;
+            gap: 22px;
+        }
+
+#xcrape-view .detail-status {
+            margin-inline: 22px;
+        }
+
+#xcrape-view .overview-grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+#xcrape-view .summary-card {
+            order: -1;
+        }
+
+#xcrape-view .summary-stats {
+            margin-top: 16px;
+        }
+
+#xcrape-view .fact-list {
+            grid-template-columns: 1fr 1fr;
+        }
+
+#xcrape-view .page-footer > span:first-child {
+            display: none;
+        }
+
+#xcrape-view .page-footer {
+            justify-content: center;
+        }
+
+
+
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+#xcrape-view *,
+#xcrape-view *::before,
+#xcrape-view *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+
+
+
+}
+
+#xcrape-view .capture-workspace { width: 100%; min-width: 0; }
+
+@media screen and (max-height: 720px) and (min-width: 769px) {
+    #xcrape-view .capture-heading { margin-bottom: 10px; }
+    #xcrape-view .capture-note { padding-block: 8px; }
+    #xcrape-view .history { margin-top: 16px; }
+    #xcrape-view .empty-state { padding-block: 16px; }
+}
