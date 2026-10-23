@@ -1573,7 +1573,200 @@
 
 }
 
+@media (max-width: 480px) {
+#xcrape-view .device-note {
+            font-size: 9px;
+        }
 
+#xcrape-view .capture-card {
+            padding: 20px 18px 0;
+        }
+
+#xcrape-view .capture-heading {
+            gap: 11px;
+            margin-bottom: 21px;
+        }
+
+#xcrape-view .capture-heading p {
+            font-size: 11px;
+        }
+
+#xcrape-view .section-icon {
+            padding: 9px;
+        }
+
+#xcrape-view .capture-note {
+            margin-inline: 0;
+            padding-inline: 0;
+            align-items: flex-start;
+            font-size: 10px;
+        }
+
+#xcrape-view .capture-note [data-icon] {
+            padding-top: 2px;
+        }
+
+#xcrape-view .url-row {
+            flex-direction: column;
+        }
+
+#xcrape-view .url-row .button {
+            min-height: 44px;
+        }
+
+#xcrape-view .capture-card h2 {
+            font-size: 16px;
+        }
+
+#xcrape-view .history {
+            margin-top: 29px;
+        }
+
+#xcrape-view .history-heading {
+            margin-bottom: 14px;
+        }
+
+#xcrape-view .history-heading h2 {
+            font-size: 17px;
+        }
+
+#xcrape-view .heading-inline {
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+#xcrape-view .working-label {
+            width: 100%;
+        }
+
+#xcrape-view .history-toolbar {
+            gap: 8px;
+        }
+
+#xcrape-view .search-field {
+            flex: 1;
+            min-width: 0;
+        }
+
+#xcrape-view .search-field input {
+            padding-right: 8px;
+        }
+
+#xcrape-view .search-field kbd {
+            display: none;
+        }
+
+#xcrape-view .status-filter select {
+            width: 121px;
+            font-size: 10px;
+            padding-left: 8px;
+        }
+
+#xcrape-view .capture-table th,
+#xcrape-view .capture-table td {
+            padding-inline: 12px;
+        }
+
+#xcrape-view .page-symbol {
+            display: none;
+        }
+
+#xcrape-view .page-title,
+#xcrape-view .page-address {
+            max-width: 39vw;
+        }
+
+#xcrape-view .date-column,
+#xcrape-view .date-cell {
+            display: none;
+        }
+
+#xcrape-view .capture-table td:last-child {
+            padding-right: 3px;
+        }
+
+#xcrape-view .status {
+            font-size: 9px;
+        }
+
+#xcrape-view .empty-state {
+            padding: 37px 18px;
+        }
+
+#xcrape-view .empty-state p {
+            font-size: 11px;
+        }
+
+#xcrape-view .pagination {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+#xcrape-view .pagination > div {
+            align-self: flex-end;
+        }
+
+#xcrape-view .detail-dialog {
+            width: 100vw;
+            height: 100dvh;
+            border-radius: 0;
+            border: 0;
+        }
+
+#xcrape-view .detail-top {
+            padding-inline: 18px;
+        }
+
+#xcrape-view .detail-content {
+            padding: 20px 18px;
+        }
+
+#xcrape-view .tab-list {
+            padding-inline: 18px;
+            gap: 21px;
+        }
+
+#xcrape-view .detail-status {
+            margin-inline: 18px;
+        }
+
+#xcrape-view .fact-list {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+#xcrape-view .section-top {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+#xcrape-view .image-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+#xcrape-view .image-info {
+            padding: 9px;
+        }
+
+#xcrape-view .image-actions {
+            flex-wrap: wrap;
+        }
+
+#xcrape-view .image-actions .button {
+            width: 100%;
+        }
+
+#xcrape-view .metadata-table th {
+            width: 110px;
+        }
+
+#xcrape-view .confirm-actions .button {
+            padding-inline: 14px;
+        }
+
+
+
+}
 
 @media (prefers-reduced-motion: reduce) {
 #xcrape-view *,

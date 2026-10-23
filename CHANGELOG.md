@@ -1,10 +1,15 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.1.4
+> **Version:** 0.1.5
 > **Last Updated:** 2026-10-23
 
 ---
+
+## [0.1.5] - 2026-10-23
+
+- Refine narrow-screen capture controls and dialogs.
+- Refresh the user and developer guides for Scans and Captures, including privacy, storage, and troubleshooting.
 
 ## [0.1.4] - 2026-10-23
 

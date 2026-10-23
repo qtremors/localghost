@@ -1,6 +1,6 @@
 [project]
 name = "localghost"
-version = "0.1.4"
+version = "0.1.5"
 description = "Inspect web apps and capture web pages in a local-first workspace."
 readme = {text = "Inspect web apps and capture web pages in a local-first workspace. See the repository documentation for setup and usage.", content-type = "text/plain"}
 authors = [{name = "Tremors"}]

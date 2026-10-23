@@ -5,11 +5,12 @@
 <h1 align="center">Localghost</h1>
 
 <p align="center">
-  Check your web app. Inspect the evidence. Verify the fix.
+  Inspect web apps. Capture web pages.
 </p>
 
 <p align="center">
   <a href="#getting-started">Getting started</a> ·
+  <a href="PRIVACY.md">Privacy</a> ·
   <a href="DEVELOPMENT.md">Developer guide</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·
   <a href="LICENSE.md">License</a>
@@ -17,11 +18,17 @@
 
 ## Why Localghost
 
-Localghost helps you check a running web app before sharing or deploying it. It looks for exposed files and credentials, checks cookies and CORS, and visits selected pages in Chromium. Each finding includes evidence and suggested changes, with a recheck to verify your fix.
+Localghost is a local-first workspace for inspecting web apps and saving rendered web pages. Its two modules share one dashboard, local storage locations, and browser setup:
 
-Reports separate **confirmed observations**, **items needing review**, and **checks that could not finish**. There is no overall security grade.
+- **Scans** check local/private apps, collect evidence, and help verify fixes.
+- **Captures** save local or public pages as screenshots and structured content you can search and export.
+
+> [!NOTE]
+> Reports and captures are stored on your machine. Scans contact the selected app, and captures can load public websites and their external resources. Read the [privacy and data-handling guide](PRIVACY.md) for storage and network details.
 
 ## Features
+
+### Scans
 
 - **App discovery:** Find local web servers and published Docker or Compose ports, or enter a local/private URL.
 - **Source context:** Connect a Next.js, Vite/React, or HTML/JavaScript project to discover routes, inspect supported configuration, and identify possible credentials without executing project code.
@@ -29,22 +36,35 @@ Reports separate **confirmed observations**, **items needing review**, and **che
 - **Browser checks:** Catch JavaScript errors, failed requests, and broken initial page loads on selected routes.
 - **Login sessions:** Check private pages with session headers, browser storage state, or an explicitly configured sign-in form.
 - **Evidence and fixes:** Review redacted HTTP exchanges, source excerpts, relevant files, and supported configuration diffs. Recheck findings while preserving the original evidence.
-- **Reports and history:** Keep reports in local SQLite history, compare compatible runs, and export JSON or printable reports. The CLI also produces text and standalone HTML.
 - **Optional traffic tests:** Run load, burst, slow-connection, rate-limit, or reflected-HTML checks when selected. These are off in the recommended workflow.
+
+### Captures
+
+- **Rendered pages:** Save a Chromium viewport screenshot and extract visible text, headings, links, responsive images, tables, lists, forms, and page metadata.
+- **Selected content:** Use an optional CSS selector to extract a particular part of a page alongside the page capture.
+- **Capture history:** Search and filter saved pages, inspect their content, and capture a page again.
+- **Exports:** Download JSON, spreadsheet-safe CSV, individual images, or an image archive. JSON includes the saved screenshot; image downloads fetch the source images again.
+- **Standalone use:** Capture a page from the command line or copy compatible capture history into Localghost. See the [capture guide](DEVELOPMENT.md#capture-module).
+
+### Shared workspace
+
+- **Local history:** Keep scan reports and captures in separate SQLite databases. Compare compatible scan reports without mixing them with capture history.
+- **Exports and presentation:** Export scan reports as JSON or printable reports, or use text and standalone HTML from the scan CLI. Both modules share an OLED black theme with cyan and blue accents, an optional light theme, and responsive navigation.
+- **One installation:** Run the dashboard, scan CLI, and capture CLI from the same package. Browser checks and captures use the same optional Chromium setup.
 
 ## Getting started
 
-Requires **Python 3.12+** and [uv](https://docs.astral.sh/uv/). Chromium is installed through Playwright for browser checks.
+Requires **Python 3.12+** and [uv](https://docs.astral.sh/uv/). Browser checks and captures also require Chromium, installed below through Playwright. The dashboard needs no Node.js installation or frontend build.
 
 ```sh
 git clone https://github.com/qtremors/localghost.git
 cd localghost/localghost
 uv sync --extra browser
 uv run playwright install chromium
-uv run python -m backend.main
+uv run localghost
 ```
 
-Open [Localghost](http://127.0.0.1:13666). To use an existing Chromium installation, set `LOCALGHOST_CHROMIUM_PATH` to its executable.
+Open [Localghost](http://127.0.0.1:13666). To use an existing Chromium installation, set `LOCALGHOST_CHROMIUM_PATH` to its executable. For configuration, installed packages, and development reload, see [setup](DEVELOPMENT.md#setup).
 
 ### Check an app
 
@@ -57,6 +77,18 @@ Open [Localghost](http://127.0.0.1:13666). To use an existing Chromium installat
 
 A recheck reports **resolved**, **still present**, or **could not verify**, with separate saved evidence. An unavailable page, missing cookie, or expired login does not establish that a finding is fixed.
 
+Reports separate **confirmed observations**, **items needing review**, and **checks that could not finish**. There is no overall security grade.
+
+### Capture a page
+
+1. Open **Captures** in the sidebar.
+2. Enter a complete local or public `http://` or `https://` address.
+3. Optionally open **Choose part of a page** and enter a CSS selector, such as `article`.
+4. Choose **Capture page**, then open the saved result to explore its screenshot, text, links, images, and page details.
+5. Search saved captures, repeat a capture, or export the content you need.
+
+Captures use a fresh browser and do not reuse scan login sessions or your personal browser profile. Loading warnings and HTTP error pages remain visible in the saved result.
+
 ### Use the CLI
 
 Run these commands from the inner `localghost/` directory:
@@ -65,11 +97,14 @@ Run these commands from the inner `localghost/` directory:
 uv run python -m backend.cli scan http://localhost:3000 --browser --path /account --format json --output report.json
 uv run python -m backend.cli recheck report.json FINDING_ID --format html --output recheck.html
 uv run python -m backend.cli projects --docker
+uv run python -m backend.modules.xcrape capture https://example.com --selector article --output capture.json
 ```
 
-The CLI uses the same engine without starting the dashboard. See the [CLI reference](DEVELOPMENT.md#cli) for source inspection, session files, configuration, and exit codes.
+These commands run without starting the dashboard. Standalone captures write JSON and do not add a record to dashboard history; output files must be new. See the [scan CLI reference](DEVELOPMENT.md#cli) and [capture guide](DEVELOPMENT.md#capture-module) for configuration, history import, and exit codes.
 
 ## Supported projects
+
+The following source recognition applies to **Scans**. Captures accept local or public HTTP/HTTPS pages independently of the site's framework, subject to rendering and extraction limits.
 
 | Project | Source context |
 | --- | --- |
@@ -86,9 +121,11 @@ For Docker apps, select a published web port reachable from Localghost, such as 
 
 ## Privacy and limits
 
-The dashboard binds to loopback, and scan targets must resolve to local/private addresses. Reports stay in local SQLite history. Source inspection is read-only; suggested patches are never applied automatically.
+The dashboard binds to loopback. Scan targets must resolve to local/private addresses; captures can visit local or public sites and load their scripts and external resources. Source inspection is read-only, and suggested patches are never applied automatically.
 
-Session credentials and private environment values used for matching stay in memory for the run. Credential values are redacted from reports and previews. Supply credentials again for authenticated rechecks. See [login sessions](DEVELOPMENT.md#login-sessions) for assertions and supported sign-in flows.
+Scan session credentials and private environment values used for matching stay in memory for the run. Recognized credential values are redacted from scan reports and evidence previews. Supply credentials again for authenticated rechecks. See [login sessions](DEVELOPMENT.md#login-sessions) for assertions and supported sign-in flows.
+
+Scan redaction does not sanitize captured pages, screenshots, or capture exports. Saved content can include private information. The databases and exported files are not encrypted by Localghost. See [PRIVACY.md](PRIVACY.md) for storage locations, outbound requests, and deletion guidance.
 
 Checks have file, response, and page limits. Blocked requests, failed authentication, and unavailable checks remain visible in the report. Findings describe the selected checks and observed behavior; they do not certify app security. Dependency vulnerabilities, SQL injection, stored/DOM XSS, general code correctness, and comparisons between users' permissions are outside the current coverage.
 
@@ -96,33 +133,30 @@ Checks have file, response, and page limits. Blocked requests, failed authentica
 
 - Report bugs or request features through [GitHub Issues](https://github.com/qtremors/localghost/issues).
 - Review changes in the [changelog](CHANGELOG.md).
-- Read the [developer guide](DEVELOPMENT.md) for architecture, configuration, API details, and verification.
 - See the [task backlog](TASKS.md) for unfinished work.
+- Read the [privacy and data-handling guide](PRIVACY.md).
 
 ## Credits
 
-Localghost is built by [Tremors](https://github.com/qtremors) with FastAPI, aiohttp, SQLite, Tree-sitter, Playwright, and plain HTML, CSS, and JavaScript. Interface fonts are served locally; their sources and licenses are listed in [font credits](CREDITS.md).
+Localghost is built by [Tremors](https://github.com/qtremors) with:
+
+- FastAPI, Starlette, and Uvicorn for the application and API.
+- aiohttp and HTTPX for HTTP work, and Playwright for Chromium automation.
+- Tree-sitter for source parsing, and Beautiful Soup and Soup Sieve for captured HTML and selectors.
+- SQLite and aiosqlite for local history, and plain HTML, CSS, and JavaScript for the dashboard.
+
+Interface fonts are served locally; their sources and licenses are listed in [font credits](CREDITS.md). Each dependency remains subject to its own license.
+
+## For developers
+
+Architecture, module ownership, configuration, CLI/API references, authentication, packaging, verification, and troubleshooting live in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## License
 
-Localghost is source-available under the **Tremors Source License (TSL)**. Read [LICENSE.md](LICENSE.md) for the terms of use.
+Localghost is source-available under the **Tremors Source License (TSL) Version 2.0**. Read [LICENSE.md](LICENSE.md) for the terms of use.
 
 ---
 
 <p align="center">
   Made by <a href="https://github.com/qtremors">Tremors</a>
 </p>
-
-## Page captures
-
-Open **Captures** in the sidebar to save local or public pages, search history, and export captured content.
-
-Capture a rendered page without starting the dashboard:
-
-```sh
-uv run python -m backend.modules.xcrape capture https://example.com --output capture.json
-```
-
-Captures can load external page resources and save private content. They do not reuse scan sessions. See the [capture guide](DEVELOPMENT.md#capture-module) for configuration, history import, and limits.
-
-The dashboard uses an OLED black default theme with cyan and blue accents. A light theme is also available.
