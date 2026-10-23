@@ -1,13 +1,13 @@
 """Prepare an explicit local login/session without storing its private state."""
 
 import json
-from pathlib import Path
 from urllib.parse import urlsplit
 
 from pydantic import SecretStr
 
 from backend.models.scan import Evidence
 from backend.services.projects import project_origin
+from backend.utils.browser import launch_chromium
 from backend.utils.evidence import safe_headers, safe_url
 from backend.utils.network import target_addresses
 from backend.utils.redaction import register_secret
@@ -15,26 +15,13 @@ from backend.utils.runtime import scan_options
 
 
 async def launch_browser(playwright, target):
-    import os
-    import shutil
-    executable = os.getenv('LOCALGHOST_CHROMIUM_PATH')
-    if not executable and not Path(playwright.chromium.executable_path).exists():
-        executable = shutil.which('chromium') or shutil.which('chromium-browser')
     hostname = urlsplit(target).hostname
     addresses = target_addresses(hostname)
     address = addresses[0] if addresses else ''
     if ':' in address:
         address = f'[{address}]'
     args = [f'--host-resolver-rules=MAP {hostname} {address}'] if addresses else []
-    if sys_platform_linux():
-        # Avoid orphaned zygote processes when a container's PID 1 has no reaper.
-        args.append('--no-zygote')
-    return await playwright.chromium.launch(headless=True, args=args, **({'executable_path': executable} if executable else {}))
-
-
-def sys_platform_linux():
-    import sys
-    return sys.platform.startswith('linux')
+    return await launch_chromium(playwright, args=args)
 
 
 def restricted_state(encoded, origin):

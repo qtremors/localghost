@@ -1,10 +1,17 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.1.0
-> **Last Updated:** 2026-03-28
+> **Version:** 0.1.1
+> **Last Updated:** 2026-10-23
 
 ---
+
+## [0.1.1] - 2026-10-23
+
+- Capture rendered pages through an independent module with separate history and a bounded queue.
+- Export captured content and images, run captures from the CLI, and import existing capture history.
+- Preserve legacy capture APIs and configuration while keeping scans available after capture setup failures.
+- Bundle dashboard assets and use writable local data paths for installed copies.
 
 ## [0.1.0] - 2026-03-28
 

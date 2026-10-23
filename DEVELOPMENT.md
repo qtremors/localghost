@@ -2,6 +2,8 @@
 
 Setup, architecture, interfaces, and verification for working on Localghost. For an overview and the dashboard workflow, start with the [README](README.md).
 
+**Version:** 0.1.1 | **Last Updated:** 2026-10-23
+
 ## Contents
 
 - [Setup](#setup)
@@ -257,3 +259,16 @@ Keep generated evidence outside the repository, as in the output paths above. Do
 | Workload is busy | Wait for the current scan or discovery run. Use one backend worker and coordinate CLI traffic tests. |
 
 When running Localghost in a container yourself, mount the source and use a private target address reachable from that container. Localghost container packaging is not currently provided.
+
+## Capture module
+
+Capture APIs use `/api/xcrape`; the legacy `/api/scrape` and `/api/jobs/...` routes remain available. Capture failures do not disable scans.
+
+From the inner `localghost/` directory, run a standalone capture or import history:
+
+```sh
+uv run python -m backend.modules.xcrape capture https://example.com --output capture.json
+uv run python -m backend.modules.xcrape import-db /absolute/path/to/scraper.db
+```
+
+Captures use optional Playwright Chromium support. Configuration comes from the repository `.env` and matching process variables; see `.env.example`. Scan and capture histories remain separate.

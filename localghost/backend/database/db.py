@@ -2,14 +2,16 @@
 
 import json
 import os
+from pathlib import Path
 from typing import Optional
 
 import aiosqlite
 
 from backend.services.projects import project_origin
+from backend.utils.paths import data_path
 from backend.utils.privacy import redact_cookie_values
 
-DB_PATH = os.getenv('LOCALGHOST_DB_PATH', os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "localghost.db"))
+DB_PATH = os.getenv('LOCALGHOST_DB_PATH', str(data_path("localghost.db")))
 SUMMARY_COLUMNS = """scan_id, target_url, timestamp, score, grade,
     CASE WHEN json_valid(results_json) THEN json_extract(results_json, '$.score.coverage') END AS coverage,
     CASE WHEN json_valid(results_json) THEN json_extract(results_json, '$.status') END AS status,
@@ -27,6 +29,7 @@ def _summary(row):
 
 async def init_db():
     """Initialize the database and create tables if they don't exist."""
+    Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("""
             CREATE TABLE IF NOT EXISTS scans (

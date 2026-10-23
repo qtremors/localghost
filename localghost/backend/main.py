@@ -11,6 +11,8 @@ from fastapi.staticfiles import StaticFiles
 
 from backend.database.db import init_db
 from backend.middleware import LocalAccessMiddleware
+from backend.modules.xcrape.lifecycle import capture_lifespan
+from backend.modules.xcrape.router import router as capture_router
 from backend.routers import history, projects, rechecks, report, scan
 
 # Configure logging
@@ -35,15 +37,16 @@ async def lifespan(app: FastAPI):
     """Application lifecycle: initialize DB on startup."""
     logger.info("Initializing database...")
     await init_db()
-    logger.info("Localghost is ready.")
-    yield
+    async with capture_lifespan(app):
+        logger.info("Localghost is ready.")
+        yield
     logger.info("Localghost shutting down.")
 
 
 app = FastAPI(
     title="Localghost",
-    description="Check running web apps, inspect findings, and verify fixes.",
-    version="0.1.0",
+    description="Inspect web apps and capture web pages in a local-first workspace.",
+    version="0.1.1",
     lifespan=lifespan,
 )
 app.add_middleware(LocalAccessMiddleware)
@@ -61,6 +64,8 @@ app.include_router(history.router)
 app.include_router(report.router)
 app.include_router(projects.router)
 app.include_router(rechecks.router)
+app.include_router(capture_router, prefix="/api/xcrape")
+app.include_router(capture_router, prefix="/api", include_in_schema=False)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -75,7 +80,7 @@ async def serve_index():
 @app.get("/health")
 async def health_check():
     """Simple health check endpoint."""
-    return {"status": "alive", "version": "0.1.0"}
+    return {"status": "alive", "version": "0.1.1"}
 
 
 if __name__ == "__main__":

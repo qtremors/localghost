@@ -24,6 +24,12 @@ def _origin(value):
     return parsed.scheme, parsed.hostname.lower().rstrip('.'), parsed.port or (443 if parsed.scheme == 'https' else 80)
 
 
+def _access_error(scope, message, status):
+    path = scope['path']
+    legacy_capture = path == '/api/scrape' or path == '/api/jobs' or path.startswith('/api/jobs/')
+    return JSONResponse({'error' if legacy_capture else 'detail': message}, status_code=status)
+
+
 class LocalAccessMiddleware:
     def __init__(self, app):
         self.app = app
@@ -38,10 +44,10 @@ class LocalAccessMiddleware:
                 raise ValueError('Invalid host')
             scheme, hostname, port = _origin(f"{scope.get('scheme', 'http')}://{host}")
         except ValueError:
-            return await JSONResponse({'detail': 'Invalid Host header'}, status_code=400)(scope, receive, send)
+            return await _access_error(scope, 'Invalid Host header', 400)(scope, receive, send)
         extra_hosts = {name.strip().lower().rstrip('.') for name in os.getenv('LOCALGHOST_ALLOWED_HOSTS', '').split(',') if name.strip()}
         if hostname != 'localhost' and not is_private_address(hostname) and hostname not in extra_hosts:
-            return await JSONResponse({'detail': 'Host is not allowed. Use a local address or configure LOCALGHOST_ALLOWED_HOSTS.'}, status_code=400)(scope, receive, send)
+            return await _access_error(scope, 'Host is not allowed. Use a local address or configure LOCALGHOST_ALLOWED_HOSTS.', 400)(scope, receive, send)
         if scope['path'].startswith('/api/') and scope['method'] in ('POST', 'PUT', 'PATCH', 'DELETE'):
             origin = headers.get('origin')
             try:
@@ -49,13 +55,13 @@ class LocalAccessMiddleware:
             except ValueError:
                 permitted_origin = False
             if not permitted_origin or headers.get('sec-fetch-site') == 'cross-site':
-                return await JSONResponse({'detail': 'Requests must come from the Localghost page.'}, status_code=403)(scope, receive, send)
+                return await _access_error(scope, 'Requests must come from the Localghost page.', 403)(scope, receive, send)
             try:
                 too_large = int(headers.get('content-length', '0')) > MAX_API_BODY
             except ValueError:
                 too_large = True
             if too_large:
-                return await JSONResponse({'detail': 'Request body is too large'}, status_code=413)(scope, receive, send)
+                return await _access_error(scope, 'Request body is too large', 413)(scope, receive, send)
         received = 0
 
         async def limited_receive():

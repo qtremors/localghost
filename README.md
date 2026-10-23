@@ -112,3 +112,13 @@ Localghost is source-available under the **Tremors Source License (TSL)**. Read 
 <p align="center">
   Made by <a href="https://github.com/qtremors">Tremors</a>
 </p>
+
+## Page captures
+
+Capture a rendered page without starting the dashboard:
+
+```sh
+uv run python -m backend.modules.xcrape capture https://example.com --output capture.json
+```
+
+Captures can load external page resources and save private content. They do not reuse scan sessions. See the [capture guide](DEVELOPMENT.md#capture-module) for configuration, history import, and limits.
