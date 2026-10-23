@@ -1,10 +1,15 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.1.2
+> **Version:** 0.1.3
 > **Last Updated:** 2026-10-23
 
 ---
+
+## [0.1.3] - 2026-10-23
+
+- Add Captures to the shared dashboard with searchable history, repeat captures, and exports.
+- Keep capture keyboard controls separate from navigation and preserve heading focus on first entry.
 
 ## [0.1.2] - 2026-10-23
 

@@ -5,20 +5,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
             name="description"
-            content="Check running web apps, inspect evidence, and check fixes again."
+            content="Inspect web apps and capture web pages in a local-first workspace."
         />
         <meta name="theme-color" content="#12251f" />
-        <title>Localghost · Project scanner</title>
-        <link rel="icon" type="image/svg+xml" href="/static/ghost.svg" />
+        <title>Localghost · Scans and captures</title>
+        <link rel="icon" type="image/svg+xml" sizes="any" href="/static/ghost.svg" />
         <link rel="stylesheet" href="/static/style.css" />
         <link rel="stylesheet" href="/static/workspace.css" />
+        <link rel="stylesheet" href="/static/xcrape/style.css" />
     </head>
     <body>
         <a class="skip-link" href="#main-content">Skip to content</a>
         <aside class="sidebar" id="sidebar" aria-label="Navigation">
             <a class="brand" href="#home" data-view="home" aria-label="Localghost home"
                 ><img src="/static/ghost.svg" alt="" width="35" height="35" /><span
-                    >localghost<span class="brand-subtitle">LOCAL PROJECT SCANNER</span></span
+                    >localghost<span class="brand-subtitle">SCANS &amp; CAPTURES</span></span
                 ></a
             >
             <div class="workspace-switch">
@@ -43,6 +44,7 @@
                         >0</span
                     >
                 </button>
+                <button type="button" class="nav-item" data-view="xcrape"><span class="material-symbols-outlined" aria-hidden="true">photo_camera</span>Captures</button>
                 <button type="button" class="nav-item hidden" id="current-report-nav" data-view="report">
                     <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>Current report
                 </button>
@@ -61,7 +63,7 @@
                     ><span><strong>Local reports</strong><small>Saved on this server</small></span>
                 </div>
                 <div class="sidebar-footer-bottom">
-                    <span>Localghost <span class="version-tag">v0.1.2</span></span
+                    <span>Localghost <span class="version-tag">v0.1.3</span></span
                     ><button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch theme">
                         <span class="material-symbols-outlined" id="theme-icon" aria-hidden="true">dark_mode</span>
                     </button>
@@ -117,8 +119,7 @@
                     </div>
                     <section class="discovery-banner" aria-labelledby="discover-heading">
                         <div class="discovery-art" aria-hidden="true">
-                            <div class="discovery-orbit"></div>
-                            <span class="material-symbols-outlined">radar</span><i></i><i></i>
+                            <span class="material-symbols-outlined">radar</span>
                         </div>
                         <div>
                             <h2 id="discover-heading">Find running apps</h2>
@@ -865,6 +866,10 @@
                         </button>
                     </div>
                 </div>
+                <section id="xcrape-view" class="workspace-view hidden" aria-labelledby="xcrape-heading">
+                    <h1 id="xcrape-heading" tabindex="-1">Captures</h1>
+                    <p role="status">Opening capture workspace…</p>
+                </section>
             </main>
         </div>
         <article id="print-report" aria-label="Printable scan report"></article>

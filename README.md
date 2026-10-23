@@ -115,6 +115,8 @@ Localghost is source-available under the **Tremors Source License (TSL)**. Read 
 
 ## Page captures
 
+Open **Captures** in the sidebar to save local or public pages, search history, and export captured content.
+
 Capture a rendered page without starting the dashboard:
 
 ```sh

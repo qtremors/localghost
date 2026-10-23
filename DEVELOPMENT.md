@@ -2,7 +2,7 @@
 
 Setup, architecture, interfaces, and verification for working on Localghost. For an overview and the dashboard workflow, start with the [README](README.md).
 
-**Version:** 0.1.2 | **Last Updated:** 2026-10-23
+**Version:** 0.1.3 | **Last Updated:** 2026-10-23
 
 ## Contents
 
@@ -261,6 +261,8 @@ Keep generated evidence outside the repository, as in the output paths above. Do
 When running Localghost in a container yourself, mount the source and use a private target address reachable from that container. Localghost container packaging is not currently provided.
 
 ## Capture module
+
+Open **Captures** in the sidebar to capture local or public pages, search saved results, and export content or images. Captures do not reuse scan sessions.
 
 Capture APIs use `/api/xcrape`; the legacy `/api/scrape` and `/api/jobs/...` routes remain available. Capture failures do not disable scans.
 

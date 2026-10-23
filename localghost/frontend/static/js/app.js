@@ -12,6 +12,7 @@ import { initComparison, setComparisonReport } from './comparison.js';
 import { preparePrint } from './print.js';
 import { initWorkspace, showView, setWorkspaceReport, setWorkspaceBusy, refreshWorkspace } from './workspace.js';
 import { projectIdentity } from './projects.js';
+import { initXcrape } from '../xcrape/script.js';
 import { $, show, hide, formatTimestamp } from './utils.js';
 
 let currentReport = null;
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRechecks({ setBusy(value) { setBusy(value); $('#running-scan-nav').classList.add('hidden'); }, refresh() { loadHistory(); refreshWorkspace(); } });
     initScanForm();
     initComparison();
+    initXcrape();
     initWorkspace({
         openReport(data) { displayResults(data); restoreConfiguration(data); },
         async configureProject(scanId) {

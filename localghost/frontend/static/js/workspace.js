@@ -9,6 +9,7 @@ const views = {
     reports: 'reports-view',
     report: 'results-dashboard',
     progress: 'scan-progress',
+    xcrape: 'xcrape-view',
 };
 const labels = {
     home: 'Projects',
@@ -16,6 +17,7 @@ const labels = {
     reports: 'Reports',
     report: 'Project report',
     progress: 'Running scan',
+    xcrape: 'Captures',
 };
 let callbacks,
     busy = false,
@@ -74,11 +76,12 @@ export function initWorkspace(handlers) {
 
 export function showView(view, { focus = true, push = true, scanId = currentReportId } = {}) {
     reportController?.abort();
-    document.dispatchEvent(new Event('workspace-navigation'));
+    document.dispatchEvent(new CustomEvent('workspace-navigation', { detail: view }));
     if (!views[view] || (view === 'report' && !scanId)) view = 'home';
     if (view === 'progress' && document.getElementById('running-scan-nav').classList.contains('hidden')) view = 'home';
     currentView = view;
     for (const [key, id] of Object.entries(views)) document.getElementById(id).classList.toggle('hidden', view !== key);
+    document.dispatchEvent(new CustomEvent('workspace-view', { detail: view }));
     document.getElementById('view-label').textContent = labels[view];
     document.querySelectorAll('.nav-item').forEach((item) => {
         const selected = item.dataset.view === view;

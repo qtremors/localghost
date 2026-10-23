@@ -1,0 +1,280 @@
+<div class="capture-workspace">
+            <header class="page-heading">
+                <div>
+                    <p class="eyebrow">Your collection</p>
+                    <h1 id="xcrape-heading" tabindex="-1">Captures</h1>
+                    <p class="intro">Capture a page. Explore it at your own pace.</p>
+                </div>
+                <span class="local-label"><span class="connection-dot" id="xc-connectionDot"></span><span id="xc-connectionLabel">Saved on this device</span><span id="xc-libraryCount" class="sr-only">0</span></span>
+            </header>
+
+            <section class="capture-card" aria-labelledby="xc-captureHeading">
+                <div class="capture-heading">
+                    <span class="section-icon" data-icon="capture"></span>
+                    <div>
+                        <h2 id="xc-captureHeading">Capture a page</h2>
+                        <p>Save its content, links, images, and a screenshot.</p>
+                    </div>
+                </div>
+                <form id="xc-captureForm">
+                    <label class="field-label" for="xc-pageUrl">Page address</label>
+                    <div class="url-row">
+                        <div class="url-field">
+                            <span data-icon="link"></span
+                            ><input
+                                id="xc-pageUrl"
+                                name="url"
+                                type="url"
+                                placeholder="http://localhost:3000"
+                                required
+                                maxlength="2048"
+                                autocomplete="url"
+                                aria-describedby="xc-formError"
+                            />
+                        </div>
+                        <button class="button primary" id="xc-captureButton" type="submit">
+                            <span>Capture page</span><span data-icon="arrow-right"></span>
+                        </button>
+                    </div>
+                    <details class="advanced" id="xc-advancedOptions">
+                        <summary>
+                            Choose part of a page <span class="optional">Optional</span
+                            ><span data-icon="chevron-down"></span>
+                        </summary>
+                        <div class="selector-field">
+                            <label class="field-label" for="xc-pageSelector">CSS selector</label
+                            ><input
+                                id="xc-pageSelector"
+                                name="selector"
+                                type="text"
+                                placeholder="article, .card, #content"
+                                maxlength="500"
+                                spellcheck="false"
+                                aria-describedby="xc-selectorHelp"
+                            />
+                            <p id="xc-selectorHelp" class="field-help">
+                                Matching elements are saved in a separate section. The full page is
+                                still captured.
+                            </p>
+                        </div>
+                    </details>
+                    <p id="xc-formError" class="form-error" role="alert" hidden></p>
+                </form>
+                <div class="capture-note">
+                    <span data-icon="info"></span>Use pages you own or have permission to capture.
+                </div>
+            </section>
+
+            <section class="history" id="xc-history" aria-labelledby="xc-historyHeading">
+                <div class="history-heading">
+                    <div class="heading-inline">
+                        <h2 id="xc-historyHeading">Your captures</h2>
+                        <span class="count-label" id="xc-totalLabel">0 pages</span
+                        ><span class="working-label" id="xc-workingLabel" hidden></span>
+                    </div>
+                    <button class="button subtle small" id="xc-refreshButton" type="button">
+                        <span data-icon="refresh"></span>Refresh
+                    </button>
+                </div>
+                <div class="history-toolbar">
+                    <div class="search-field">
+                        <span data-icon="search"></span
+                        ><input
+                            type="search"
+                            id="xc-searchInput"
+                            placeholder="Search your pages…"
+                            aria-label="Search saved pages"
+                            maxlength="200"
+                            autocomplete="off"
+                        /><kbd>/</kbd>
+                    </div>
+                    <label class="status-filter"
+                        ><span class="sr-only">Filter by status</span
+                        ><select id="xc-statusFilter">
+                            <option value="">All statuses</option>
+                            <option value="completed">Saved</option>
+                            <option value="running">Capturing</option>
+                            <option value="pending">Waiting</option>
+                            <option value="failed">Needs attention</option>
+                        </select></label
+                    >
+                </div>
+                <div id="xc-listError" class="notice error-notice" role="alert" hidden></div>
+                <div class="history-surface" id="xc-historySurface" aria-busy="true">
+                    <div class="empty-state" id="xc-emptyState">
+                        <span class="empty-icon" data-icon="page"></span>
+                        <h3 id="xc-emptyTitle">Loading your pages…</h3>
+                        <p id="xc-emptyDescription">Just a moment.</p>
+                        <button
+                            type="button"
+                            class="button secondary small"
+                            id="xc-emptyAction"
+                            hidden
+                        >
+                            Capture your first page<span data-icon="arrow-right"></span>
+                        </button>
+                    </div>
+                    <div class="table-wrap" id="xc-tableWrap" hidden>
+                        <table class="capture-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Page</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" class="date-column">Saved</th>
+                                    <th scope="col"><span class="sr-only">Actions</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="xc-captureRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <nav class="pagination" id="xc-pagination" aria-label="Capture pages" hidden>
+                    <span id="xc-pageRange"></span>
+                    <div>
+                        <button type="button" class="button secondary small" id="xc-previousPage">
+                            <span data-icon="arrow-left"></span>Previous</button
+                        ><button type="button" class="button secondary small" id="xc-nextPage">
+                            Next<span data-icon="arrow-right"></span>
+                        </button>
+                    </div>
+                </nav>
+            </section>
+            <footer class="page-footer">
+                <span>xcrape · Capture module</span
+                ><span
+                    ><kbd>N</kbd> New capture <span class="footer-divider">·</span>
+                    <kbd>/</kbd> Search</span
+                >
+            </footer>
+        </div>
+<dialog id="xc-detailDialog" class="detail-dialog" aria-labelledby="xc-detailTitle">
+            <div class="detail-top">
+                <div class="detail-heading">
+                    <span class="eyebrow" id="xc-detailNumber">Saved page</span>
+                    <h2 id="xc-detailTitle">Page details</h2>
+                    <a
+                        id="xc-detailUrl"
+                        class="detail-url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ></a>
+                </div>
+                <div class="detail-actions">
+                    <button class="button secondary small" id="xc-againButton" type="button">
+                        <span data-icon="refresh"></span>Capture again
+                    </button>
+                    <details class="export-menu" id="xc-exportMenu">
+                        <summary class="button secondary small">
+                            <span data-icon="download"></span>Export<span
+                                data-icon="chevron-down"
+                            ></span>
+                        </summary>
+                        <div class="menu-items">
+                            <button id="xc-exportJson" type="button">Download JSON</button
+                            ><button id="xc-exportCsv" type="button">Download CSV</button
+                            ><button id="xc-copyData" type="button">Copy data</button>
+                        </div>
+                    </details>
+                    <button
+                        class="icon-button close-button"
+                        id="xc-closeDetail"
+                        type="button"
+                        autofocus
+                        aria-label="Close page details"
+                    >
+                        <span data-icon="close"></span>
+                    </button>
+                </div>
+            </div>
+            <div id="xc-detailStatus" class="detail-status" role="status" hidden></div>
+            <div class="tab-list" id="xc-detailTabs" role="tablist" aria-label="Page content">
+                <button
+                    id="xc-tab-overview"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="xc-detailContent"
+                    tabindex="0"
+                    data-tab="overview"
+                >
+                    Overview</button
+                ><button
+                    id="xc-tab-text"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="xc-detailContent"
+                    tabindex="-1"
+                    data-tab="text"
+                >
+                    Text</button
+                ><button
+                    id="xc-tab-links"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="xc-detailContent"
+                    tabindex="-1"
+                    data-tab="links"
+                >
+                    Links</button
+                ><button
+                    id="xc-tab-images"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="xc-detailContent"
+                    tabindex="-1"
+                    data-tab="images"
+                >
+                    Images</button
+                ><button
+                    id="xc-tab-data"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="xc-detailContent"
+                    tabindex="-1"
+                    data-tab="data"
+                >
+                    Page details</button
+                ><button
+                    id="xc-tab-raw"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="xc-detailContent"
+                    tabindex="-1"
+                    data-tab="raw"
+                >
+                    All data
+                </button>
+            </div>
+            <div
+                class="detail-content"
+                id="xc-detailContent"
+                role="tabpanel"
+                aria-labelledby="xc-tab-overview"
+                tabindex="0"
+            ></div>
+        </dialog>
+
+        <dialog
+            class="confirm-dialog"
+            id="xc-deleteDialog"
+            aria-labelledby="xc-deleteTitle"
+            aria-describedby="xc-deleteDescription"
+        >
+            <form method="dialog">
+                <span class="delete-icon" data-icon="trash"></span>
+                <h2 id="xc-deleteTitle">Delete this capture?</h2>
+                <p id="xc-deleteDescription">Its saved content will be removed from this device.</p>
+                <div class="confirm-actions">
+                    <button class="button secondary" value="cancel" autofocus>Keep it</button
+                    ><button class="button danger" id="xc-confirmDelete" type="button">
+                        Delete capture
+                    </button>
+                </div>
+            </form>
+        </dialog>
+        <div
+            class="toast-region"
+            id="xc-toastRegion"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+        ></div>
