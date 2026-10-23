@@ -194,9 +194,9 @@ def main():
                 page.locator('#scan-btn').click()
                 expect(page.locator('#history-status')).to_have_text('3 saved scans', timeout=20000)
                 page.locator('#theme-toggle').click()
-                expect(page.locator('html')).to_have_attribute('data-theme', 'dark')
+                expect(page.locator('html')).to_have_attribute('data-theme', 'light')
                 page.reload()
-                expect(page.locator('html')).to_have_attribute('data-theme', 'dark')
+                expect(page.locator('html')).to_have_attribute('data-theme', 'light')
                 # Narrow viewport navigation, focus containment, and report layout.
                 page.set_viewport_size({'width': 390, 'height': 844})
                 new_scan(page)
@@ -279,7 +279,7 @@ def main():
                 restricted.add_init_script("Object.defineProperty(window, 'localStorage', {get() { throw new DOMException('Storage denied'); }});")
                 restricted.goto(f'http://127.0.0.1:{port}')
                 restricted.locator('#theme-toggle').click()
-                expect(restricted.locator('html')).to_have_attribute('data-theme', 'dark')
+                expect(restricted.locator('html')).to_have_attribute('data-theme', 'light')
                 restricted.close()
                 # Inconclusive active tests retain diagnostics and never render a pass.
                 target.unavailable = True

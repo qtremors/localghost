@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/localghost.png" alt="Localghost logo" width="120">
+  <img src="assets/localghost.svg" alt="Localghost logo" width="120">
 </p>
 
 <h1 align="center">Localghost</h1>
@@ -101,7 +101,7 @@ Checks have file, response, and page limits. Blocked requests, failed authentica
 
 ## Credits
 
-Localghost is built by [Tremors](https://github.com/qtremors) with FastAPI, aiohttp, SQLite, Tree-sitter, Playwright, and plain HTML, CSS, and JavaScript. Interface fonts are served locally; their sources and licenses are listed in [font credits](localghost/frontend/static/fonts/README.md).
+Localghost is built by [Tremors](https://github.com/qtremors) with FastAPI, aiohttp, SQLite, Tree-sitter, Playwright, and plain HTML, CSS, and JavaScript. Interface fonts are served locally; their sources and licenses are listed in [font credits](CREDITS.md).
 
 ## License
 
@@ -124,3 +124,5 @@ uv run python -m backend.modules.xcrape capture https://example.com --output cap
 ```
 
 Captures can load external page resources and save private content. They do not reuse scan sessions. See the [capture guide](DEVELOPMENT.md#capture-module) for configuration, history import, and limits.
+
+The dashboard uses an OLED black default theme with cyan and blue accents. A light theme is also available.

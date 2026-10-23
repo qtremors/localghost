@@ -2,7 +2,7 @@
 
 Setup, architecture, interfaces, and verification for working on Localghost. For an overview and the dashboard workflow, start with the [README](README.md).
 
-**Version:** 0.1.3 | **Last Updated:** 2026-10-23
+**Version:** 0.1.4 | **Last Updated:** 2026-10-23
 
 ## Contents
 
@@ -274,3 +274,5 @@ uv run python -m backend.modules.xcrape import-db /absolute/path/to/scraper.db
 ```
 
 Captures use optional Playwright Chromium support. Configuration comes from the repository `.env` and matching process variables; see `.env.example`. Scan and capture histories remain separate.
+
+The dashboard defaults to OLED black with cyan and blue accents. Saved light/dark preferences remain available through the theme button. The root `assets/localghost.svg` and packaged SVG are identical.

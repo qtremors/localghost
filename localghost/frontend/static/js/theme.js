@@ -3,7 +3,7 @@ const STORAGE_KEY = 'localghost-theme';
 export function initTheme() {
     let saved;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch { /* Storage can be disabled. */ }
-    setTheme(saved === 'dark' ? 'dark' : 'light');
+    setTheme(saved === 'light' ? 'light' : 'dark');
     document.getElementById('theme-toggle').addEventListener('click', () => {
         setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
     });
@@ -11,6 +11,7 @@ export function initTheme() {
 function setTheme(theme) {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
+    document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#000000' : '#ffffff';
     try { localStorage.setItem(STORAGE_KEY, theme); } catch { /* Theme still applies. */ }
     document.getElementById('theme-icon').textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
     document.getElementById('theme-toggle').setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);

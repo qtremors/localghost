@@ -1,10 +1,17 @@
 # Localghost Changelog
 
 > **Project:** Localghost
-> **Version:** 0.1.3
+> **Version:** 0.1.4
 > **Last Updated:** 2026-10-23
 
 ---
+
+## [0.1.4] - 2026-10-23
+
+- Use the combined ghost and spider SVG in the README, dashboard, and favicon; preserve original artwork.
+- Add an OLED black default theme, white text, cyan and blue accents, and distinct status colors.
+- Flatten project and report layouts, adapt desktop spacing, and enlarge the sidebar logo.
+- Keep project documentation at the root and exclude local data and generated files from Git.
 
 ## [0.1.3] - 2026-10-23
 

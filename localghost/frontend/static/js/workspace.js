@@ -214,15 +214,17 @@ export async function refreshWorkspace(append = false) {
 
 function projectCard(project) {
     const card = element('article', 'project-card');
-    const top = element('div', 'project-card__top');
+    const identity = element('div', 'project-card__identity');
+    card.dataset.status = project.latest.status;
     const avatar = element('span', 'project-avatar');
     avatar.appendChild(icon('deployed_code'));
-    top.append(
-        avatar,
+    identity.append(
+        element('h3', '', project.name),
+        element('p', 'project-card__url', project.origin),
         element(
             'small',
-            '',
-            ['partial', 'error'].includes(project.latest.status) ? 'INCOMPLETE SCAN' : 'LAST SAVED SCAN',
+            'project-card__status',
+            ['partial', 'error'].includes(project.latest.status) ? 'Incomplete scan' : 'Last saved scan',
         ),
     );
     const scoreRow = element('div', 'project-card__score');
@@ -243,9 +245,8 @@ function projectCard(project) {
     });
     footer.append(open, scan);
     card.append(
-        top,
-        element('h3', '', project.name),
-        element('p', 'project-card__url', project.origin),
+        avatar,
+        identity,
         scoreRow,
         footer,
     );
